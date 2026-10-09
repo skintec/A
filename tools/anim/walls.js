@@ -1,0 +1,70 @@
+/* Animación intencionada de cada fondo de pantalla: el movimiento sale de lo que el diseño ya sugiere
+   (ladrillos que avanzan, un cuadrado que rebota, una llama que arde, barras que laten...). */
+(function(){
+  const W=MA.WALL;
+  const pw=p=>+p.getAttribute('width')||0, ph=p=>+p.getAttribute('height')||0;
+  const k=(size,target)=>Math.max(1,Math.round(target/size))*size;     // distancia múltiplo del módulo, cerca de "target"
+  const tag=(c,t)=>c.L.filter(e=>e.tagName===t);
+  const scrollAll=(c,dx,dy)=>c.scroll(c.patterns,dx,dy);
+  const pat=(c,mult,axis)=>{const p=c.patterns[0];if(!p)return;scrollAll(c,axis==='y'?0:k(pw(p),mult||180),axis==='x'?0:(axis==='y'?k(ph(p),mult||180):k(ph(p),mult||180)))};
+  W['aparejo-gigante']=c=>pat(c,480,'x');
+  W['lana-monumental']=c=>{tag(c,'polyline').forEach((e,i)=>c.shift(e,i%2?-28:28,0,1,{delay:i*.5,ease:'ease-in-out'}))};
+  W['bandas-verticales']=c=>{tag(c,'rect').forEach((e,i)=>c.a(e,'ma-eq',2,{o:'50% 100%',delay:i*.5}));c.a(tag(c,'path')[0],'ma-dim',2)};
+  W['corte-diagonal']=c=>{c.L.forEach(e=>c.shift(e,40,-71,1,{}))};
+  W['plano-grilla']=c=>{c.scroll(c.patterns,200,0);tag(c,'circle').forEach((e,i)=>c.a(e,'ma-pulse2',2,{o:'50% 50%',delay:i*.3}));c.a(tag(c,'path').pop(),'ma-unroll',2,{o:'50% 50%'})};
+  W['cartela']=c=>{c.appear(c.L);};
+  W['achurado-horizonte']=c=>{c.scroll(c.patterns,k(pw(c.patterns[0]),54),0);c.a(tag(c,'path')[0],'ma-dim',3)};
+  W['montantes-grandes']=c=>c.wave(c.L,'ma-dim',2,3);
+  W['capas-isometricas']=c=>c.L.forEach((e,i)=>c.shift(e,0,[-70,-25,25,70][i]||0,1,{}));
+  W['marcos-concentricos']=c=>c.L.forEach((e,i)=>c.a(e,'ma-pulse2',2,{o:'50% 50%',delay:i*.2}));
+  W['marcos-cascada']=c=>{
+    const r=tag(c,'rect'),s=540,h=13.5;
+    const lead=r[r.length-1],x0=+lead.getAttribute('x'),y0=+lead.getAttribute('y');
+    const minx=h+1,maxx=c.vb[2]-s-h-1,miny=h+1,maxy=c.vb[3]-s-h-1;
+    c.bounce(r,{id:'11',lag:.28,minx,maxx,miny,maxy,px:3,py:6,phx:3*Math.min(.999,(x0-minx)/(maxx-minx))/2,phy:6*Math.min(.999,(y0-miny)/(maxy-miny))/2});
+  };
+  W['marco-recortado']=c=>c.L.forEach(e=>c.shift(e,-60,60,1,{}));
+  W['panel-perforado']=c=>c.scroll(c.patterns,72,72);
+  W['punto-destacado']=c=>{const e=tag(c,'rect').pop();const s=pw(c.patterns[0]);c.hop(e,[[s,0],[s,0],[0,s],[0,s],[-s,0],[-s,0],[0,-s],[0,-s]])};
+  W['reglas-bordes']=c=>c.wave(c.L.slice(1),'ma-dim',2,3);
+  W['ondas-acusticas']=c=>tag(c,'polyline').forEach((e,i)=>c.shift(e,0,9,1,{delay:i*.17}));
+  W['zigzag-bandas']=c=>tag(c,'polyline').forEach((e,i)=>c.shift(e,i%2?-30:30,0,1,{delay:0}));
+  W['damero-tonal']=c=>scrollAll(c,360,0);
+  W['lineas-diagonales']=c=>scrollAll(c,k(pw(c.patterns[0]),72),0);
+  W['corte-de-muro']=c=>{c.scroll(c.patterns,k(pw(c.patterns[0]),64),0);tag(c,'polyline').forEach(e=>c.shift(e,30,0,1,{}))};
+  W['estratos']=c=>{c.scroll(c.patterns,k(pw(c.patterns[0]),56),0);tag(c,'rect').slice(1).forEach((e,i)=>c.a(e,'ma-sweep',1,{o:'0% 50%',delay:i*.1,ease:'ease-in-out'}))};
+  W['tipo-f120']=c=>c.L.forEach(e=>c.march(e,'22 14',36,3));
+  W['tipo-lambda']=c=>{c.a(c.L[0],'ma-pulse2',2,{o:'50% 50%'});c.march(c.L[1],'22 14',36,3)};
+  W['tipo-decibeles']=c=>{tag(c,'path').forEach((e,i)=>c.a(e,'ma-eq',[3,2,4,6][i%4],{o:'50% 100%',delay:(i*.21)%1.5}));c.a(tag(c,'text')[0],'ma-pulse2',2,{o:'50% 50%'})};
+  W['iconos-tonal']=c=>c.G.forEach((g,i)=>c.a(g,'ma-dim',1,{delay:((i%7)+Math.floor(i/7))*.2,ease:'ease-in-out'}));
+  W['llama-gigante']=c=>c.a(c.L[0],'ma-flicker',4,{o:'50% 100%'});
+  W['ladrillo-destacado']=c=>{const r=tag(c,'rect'),base=r[0].getAttribute('fill');const e=r.find((x,i)=>i>0&&x.getAttribute('fill')!==base&&x.getAttribute('fill')!=='#FFFDF9')||r[r.length-1];c.hop(e,[[160,0],[160,0],[-160,0],[-160,0]])};
+  W['aparejo-flamenco']=c=>pat(c,180,'x');
+  W['espiga']=c=>pat(c,200,'x');
+  W['petatillo']=c=>scrollAll(c,240,240);
+  W['juntas-abiertas']=c=>pat(c,140,'x');
+  W['sillares']=c=>c.wave(c.L,'ma-dim',1,3);
+  W['esquineras-red']=c=>scrollAll(c,120,120);
+  W['ejes-de-plano']=c=>c.appear(c.L);
+  W['niveles']=c=>c.appear(c.L);
+  W['escalera']=c=>{
+    const nm=c.kf('ma-stair','0%,100%{clip-path:inset(0 100% 0 0)}12%{clip-path:inset(0 100% 0 0)}70%,86%{clip-path:inset(0 0 0 0)}');
+    c.L.forEach(e=>c.a(e,nm,1,{ease:'steps(9,end)',o:'0% 50%'}));
+  };
+  W['horizonte-sectores']=c=>c.appear(c.L);
+  W['truchet-arcos']=c=>c.wave(c.L,'ma-dim',1,3);
+  W['triangulos']=c=>c.L.forEach((e,i)=>c.a(e,'ma-dim',1,{delay:((i*37)%100)/100*3}));
+  W['cruz-replanteo']=c=>{tag(c,'circle').forEach((e,i)=>c.a(e,'ma-pulse2',2,{o:'50% 50%',delay:i*.12}));c.a(tag(c,'path')[0],'ma-dim',3)};
+  W['chevrones']=c=>{const p=c.patterns[0];scrollAll(c,0,k(ph(p),180))};
+  W['almenas']=c=>tag(c,'polyline').forEach((e,i)=>c.shift(e,i%2?-25:25,0,1,{}));
+  W['marcos-y-bloques']=c=>pat(c,180,'xy');
+  W['moire']=c=>{const [a,b]=c.patterns;c.scroll(a,k(pw(a),36),0);c.scroll(b,-k(pw(b),30),0)};
+  W['achurado-cruzado']=c=>pat(c,180,'xy');
+  W['placa-atornillada']=c=>pat(c,360,'x');
+  W['cielo-modular']=c=>{const e=tag(c,'rect').pop();const s=pw(c.patterns[0]);c.hop(e,[[-s,0],[-s,0],[0,s],[0,s],[s,0],[s,0],[0,-s],[0,-s]])};
+  W['ductos']=c=>tag(c,'polyline').forEach((e,i)=>c.march(e,'240 60',300,[2,3,2,3,2,3,2][i%7],{delay:i*.3}));
+  W['cota-minima']=c=>{c.a(tag(c,'path')[0],'ma-springx',2,{o:'50% 50%'});c.a(tag(c,'rect').pop(),'ma-pulse2',2,{o:'50% 50%'})};
+  W['mitad-lana']=c=>tag(c,'polyline').forEach(e=>c.shift(e,30,0,1,{}));
+  W['flechas-termicas']=c=>tag(c,'path').forEach((e,i)=>{const dashed=MA.prop(e,'stroke-dasharray');if(dashed&&dashed!=='none')c.a(e,'ma-dim',2,{delay:i*.15});else c.a(e,'ma-flow',2,{delay:(i%17)*.18,ease:'ease-in-out'})});
+  W['sello-circular']=c=>tag(c,'path').forEach(e=>c.a(e,'ma-spin',1,{p:[c.vb[2]/2,c.vb[3]/2],ease:'linear'}));
+})();
