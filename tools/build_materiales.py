@@ -12,7 +12,7 @@ def block_scene(label, cat): d = scene(label, cat); return d, base(d)
 # 1 Lana de vidrio con polipropileno blanco (galpón)
 d, b = block_scene("Lana de vidrio con polipropileno blanco: aísla bajo la cubierta y refleja la luz", TERM)
 b += sun(150, 160) + speaker(110, 545)
-b += thin(410, TOP, 30, BOT - TOP, G) + fibers(440, TOP, 180, BOT - TOP, 1) + f'<rect x="620" y="{TOP}" width="22" height="{BOT-TOP}" fill="{PA}" stroke="{G}" stroke-width="5"/>'
+b += thin(416, TOP, 24, BOT - TOP, G) + fibers(440, TOP, 180, BOT - TOP, 1) + f'<rect x="618" y="{TOP}" width="24" height="{BOT-TOP}" fill="{PA}" stroke="{G}" stroke-width="4"/>'
 for i, y in enumerate([330, 480, 630]): b += heat_in(d, y, .4 + i * .5, 230, 440, 620, "absorb")
 for i, y in enumerate([400, 700]): b += snd(d, y, 3.6 + i * .7, 200, 410, 620, "absorb")
 for i, y in enumerate([330, 600]): b += mv(d, dot(CD, 8), [P(4.2 + i * .9, 960, y, 1, 0), P(4.3 + i * .9, 960, y), P(5.0 + i * .9, 650, 545), P(5.8 + i * .9, 960, 760 - i * 360, .8, 0)])
@@ -21,8 +21,8 @@ save("lana-vidrio-pp", d, b)
 # 2 Panel velo negro: fachada ventilada con juntas abiertas
 d, b = block_scene("Panel velo negro: aísla detrás de la fachada con juntas abiertas", TERM)
 b += sun(150, 160) + speaker(110, 545)
-for k in range(6): b += thin(330, TOP + k * 100, 60, 84, G)
-b += fibers(440, TOP, 170, BOT - TOP, 2) + thin(440, TOP, 22, BOT - TOP, G)
+for k in range(6): b += thin(330, TOP + k * 100, 24, 84, G)
+b += fibers(440, TOP, 170, BOT - TOP, 2) + thin(440, TOP, 24, BOT - TOP, G)
 for i, y in enumerate([300, 420, 540, 660]): b += heat_in(d, y + 2, .4 + i * .45, 200, 440, 610, "absorb")
 for i, y in enumerate([380, 620]): b += snd(d, y, 3.2 + i * .8, 200, 390, 620, "absorb")
 save("panel-velo-negro", d, b)
@@ -38,7 +38,7 @@ save("lana-vidrio-libre", d, b)
 
 # 4 Lana de vidrio con papel kraft: barrera de vapor
 d, b = block_scene("Lana de vidrio con papel kraft: la barrera de vapor detiene la humedad", TERM)
-b += fibers(440, TOP, 200, BOT - TOP, 4) + thin(618, TOP, 22, BOT - TOP, CD)
+b += fibers(440, TOP, 200, BOT - TOP, 4) + thin(616, TOP, 24, BOT - TOP, CD)
 for i, y in enumerate([340, 460, 580, 700]):  # vapor desde lado caliente (derecha) rebota en el kraft
     t = .3 + i * .7
     b += mv(d, ring(M, 12), [P(t, 980, y, 1, 0), P(t + .1, 980, y), P(t + 1.2, 665, y), P(t + 1.4, 690, y - 40), P(t + 2.2, 960, y - 150, .6, 0)])
@@ -58,7 +58,7 @@ d = scene("Frazada de lana mineral con malla: envuelve la cañería y retiene el
 b = f'<rect width="1092" height="26" fill="{TERM}"/><circle cx="546" cy="546" r="260" fill="{PL}"/>'
 b += d.el("circle", f'cx="546" cy="546" r="170" fill="none" stroke="{G}" stroke-width="4" class="b"', [(0, "opacity:0"), (.5, "opacity:0"), (.6, "opacity:1"), (7.2, "opacity:1")])
 b += d.el("circle", f'cx="546" cy="546" r="215" fill="none" stroke="{PL}" stroke-width="86" pathLength="1" stroke-dasharray="1 1" transform="rotate(-90 546 546)"', [(0, "stroke-dashoffset:1"), (.6, "stroke-dashoffset:1"), (2.4, "stroke-dashoffset:0")], "ease-in-out")
-b += d.el("circle", f'cx="546" cy="546" r="258" fill="none" stroke="{G}" stroke-width="5" stroke-dasharray="12 10" pathLength="1" transform="rotate(-90 546 546)"', [(0, "opacity:0"), (2.2, "opacity:0"), (2.6, "opacity:1")])
+b += d.el("circle", f'cx="546" cy="546" r="258" fill="none" stroke="{G}" stroke-width="4" stroke-dasharray="12 10" pathLength="1" transform="rotate(-90 546 546)"', [(0, "opacity:0"), (2.2, "opacity:0"), (2.6, "opacity:1")])
 b += d.el("circle", 'cx="546" cy="546" r="150"', [(0, f"fill:{C}"), (3.0, f"fill:{C}"), (3.2, f"fill:{C}")], "ease-in-out")
 import math as _m
 for k in range(12):
@@ -88,12 +88,12 @@ save("panel-ductos", d, b)
 d = scene("Banda elastoacústica: corta la vibración entre tabique y losa", TERM)
 b = f'<rect width="1092" height="26" fill="{TERM}"/><rect x="0" y="26" width="1092" height="1066" fill="{PL}"/>'
 b += slab(0, 700, 1092, 300, PA) + fibers(0, 690, 0, 0, 0, 0) if False else slab(0, 700, 1092, 300, PA)
-b += thin(430, 680, 232, 20, C) + thin(446, 260, 200, 420, G) + f'<rect x="446" y="260" width="200" height="420" fill="{PA}" stroke="{G}" stroke-width="5"/>'
+b += thin(430, 680, 232, 20, C) + thin(446, 260, 200, 420, G) + f'<rect x="446" y="260" width="200" height="420" fill="{PA}" stroke="{G}" stroke-width="4"/>'
 b += thin(436, 686, 220, 14, CD)
 for i in range(4):
     t = .5 + i * 1.6
-    b += mv(d, f'<path d="M0 -30L0 30" stroke="{G}" stroke-width="9" stroke-linecap="round"/><path d="M-28 -12L-28 12M28 -12L28 12" stroke="{G}" stroke-width="6" stroke-linecap="round"/>', [P(t, 120, 800, 1, 0), P(t + .1, 120, 800), P(t + 1.2, 400, 800), P(t + 1.4, 425, 800, .5, 0)])
-    b += mv(d, f'<path d="M0 -30L0 30" stroke="{G}" stroke-width="5" stroke-linecap="round" opacity=".5"/>', [P(t + 1.2, 405, 790, .6, 0), P(t + 1.3, 405, 790, .6), P(t + 2.3, 420, 700, .2, 0)])
+    b += mv(d, f'<path d="M0 -30L0 30" stroke="{G}" stroke-width="7" stroke-linecap="round"/><path d="M-28 -12L-28 12M28 -12L28 12" stroke="{G}" stroke-width="7" stroke-linecap="round"/>', [P(t, 120, 800, 1, 0), P(t + .1, 120, 800), P(t + 1.2, 400, 800), P(t + 1.4, 425, 800, .5, 0)])
+    b += mv(d, f'<path d="M0 -30L0 30" stroke="{G}" stroke-width="4" stroke-linecap="round" opacity=".5"/>', [P(t + 1.2, 405, 790, .6, 0), P(t + 1.3, 405, 790, .6), P(t + 2.3, 420, 700, .2, 0)])
 b += d.el("g", "", [(0, "transform:translateX(0)")] + [(.5 + i * 1.6 + 1.3, "transform:translateX(0)") for i in range(0)], "linear").replace("/>", ">" + "</g>")
 for i in range(3): b += snd(d, 480, 4.3 + i * .6, 100, 400, 640, "transmit") if False else ""
 b += d.el("g", "", [(0, "transform:translateX(0)"), (1.4, "transform:translateX(0)"), (1.5, "transform:translateX(-5px)"), (1.6, "transform:translateX(5px)"), (1.7, "transform:translateX(-3px)"), (1.8, "transform:translateX(0)")], "linear").replace("/>", ">" + "</g>")
@@ -111,7 +111,7 @@ for k, a in enumerate([20, 70, 120, 160, 200, 250, 300, 340]):
     b += mv(d, dot(C, 10), [P(t, 546 + rx * 120, 546 + ry * 120, 1, 0), P(t + .1, 546 + rx * 120, 546 + ry * 120), P(t + 1.0, 546 + rx * 175, 546 + ry * 175), P(t + 2.6, 546 + rx * 205, 546 + ry * 205, .4, 0)])
 b += d.el("rect", f'x="380" y="380" width="332" height="332" fill="{PA}" opacity="0"', [(0, "opacity:0"), (1.0, "opacity:.25"), (2.0, "opacity:0"), (3.0, "opacity:.25"), (4.0, "opacity:0"), (5.0, "opacity:.25"), (6.0, "opacity:0")], "ease-in-out")
 b += sun(930, 160) if False else ""
-b += d.el("rect", f'x="250" y="250" width="592" height="592" fill="none" stroke="{G}" stroke-width="22"', [(0, "opacity:1")])
+b += d.el("rect", f'x="250" y="250" width="592" height="592" fill="none" stroke="{G}" stroke-width="24"', [(0, "opacity:1")])
 save("fibra-ceramica", d, b)
 
 # ---------- PROTECCIÓN PASIVA CONTRA INCENDIOS ----------
@@ -177,10 +177,10 @@ for side, x in ((0, 120), (1, 640)):
     b += flame(d, x + 70, 960, .2, 1.0) + flame(d, x + 200, 960, .4, .9)
     b += slab(x, 300, 300, 40, PA) if False else ""
     if side == 0:
-        b += d.el("rect", f'x="{x}" y="300" width="320" height="520" fill="{PA}" stroke="{G}" stroke-width="5" class="b"', [(0, "transform:none;opacity:1"), (3.4, "transform:none;opacity:1"), (4.2, "transform:rotate(4deg) translateY(30px);opacity:1"), (5.6, "transform:rotate(14deg) translateY(300px);opacity:0")], "ease-in", ) .replace('/>', ' style="transform-origin:50% 100%"/>')
-        b += d.el("path", f'd="M{x+60} 300L{x+130} 470L{x+90} 560M{x+240} 300L{x+210} 430" fill="none" stroke="{G}" stroke-width="5"', [(0, "opacity:0"), (2.4, "opacity:0"), (3.2, "opacity:1")])
+        b += d.el("rect", f'x="{x}" y="300" width="320" height="520" fill="{PA}" stroke="{G}" stroke-width="4" class="b"', [(0, "transform:none;opacity:1"), (3.4, "transform:none;opacity:1"), (4.2, "transform:rotate(4deg) translateY(30px);opacity:1"), (5.6, "transform:rotate(14deg) translateY(300px);opacity:0")], "ease-in", ) .replace('/>', ' style="transform-origin:50% 100%"/>')
+        b += d.el("path", f'd="M{x+60} 300L{x+130} 470L{x+90} 560M{x+240} 300L{x+210} 430" fill="none" stroke="{G}" stroke-width="4"', [(0, "opacity:0"), (2.4, "opacity:0"), (3.2, "opacity:1")])
     else:
-        b += f'<rect x="{x}" y="300" width="320" height="520" fill="{PA}" stroke="{G}" stroke-width="5"/>' + thin(x + 20, 320, 280, 480, PL)
+        b += f'<rect x="{x}" y="300" width="320" height="520" fill="{PA}" stroke="{G}" stroke-width="4"/>' + thin(x + 20, 320, 280, 480, PL)
         b += d.el("rect", f'x="{x}" y="300" width="320" height="520" fill="{C}" opacity="0"', [(0, "opacity:0"), (6.0, "opacity:.18")])
 for k in range(6): b += mv(d, dot(C, 10), [P(.5 + k * .55, 640 + 40 + k * 45, 900, 1, 0), P(.6 + k * .55, 640 + 40 + k * 45, 900), P(1.3 + k * .55, 640 + 40 + k * 45, 840), P(1.6 + k * .55, 650 + 40 + k * 45, 850, .5, 0)])
 for k in range(3): b += mv(d, dot(C, 10), [P(3.6 + k * .5, 140 + k * 90, 900, 1, 0), P(3.7 + k * .5, 140 + k * 90, 900), P(4.4 + k * .5, 200 + k * 90, 500), P(5.2 + k * .5, 230 + k * 90, 150, .8, 0)])
@@ -208,10 +208,10 @@ save("rayos-x", d, b)
 
 # 19 Yeso cartón Impact
 d, b = block_scene("Yeso cartón Impact: absorbe los golpes y no se daña", TAB)
-b += d.el("rect", f'x="560" y="170" width="90" height="680" fill="{PA}" stroke="{G}" stroke-width="5" class="b"', [(0, "transform:none")] + sum([[(1.0 + k * 1.7, "transform:none"), (1.12 + k * 1.7, "transform:scale(.94,1.0) translateX(-6px)"), (1.4 + k * 1.7, "transform:none")] for k in range(4)], []), "ease-out")
+b += d.el("rect", f'x="560" y="170" width="90" height="680" fill="{PA}" stroke="{G}" stroke-width="4" class="b"', [(0, "transform:none")] + sum([[(1.0 + k * 1.7, "transform:none"), (1.12 + k * 1.7, "transform:scale(.94,1.0) translateX(-6px)"), (1.4 + k * 1.7, "transform:none")] for k in range(4)], []), "ease-out")
 for k, y in enumerate([300, 450, 600, 740]):
     t = .2 + k * 1.7
-    b += mv(d, f'<circle r="34" fill="{C}"/><path d="M-20 -8Q0 -24 20 -8" stroke="{PA}" stroke-width="5" fill="none"/>', [P(t, 120, y - 40, 1, 0), P(t + .1, 120, y - 40), P(t + .9, 500, y, 1, 1), P(t + 1.0, 500, y, 1.0, 1, 1), P(t + 1.12, 506, y, .85, 1.1), P(t + 1.9, 150, y + 80, 1, 0)])
+    b += mv(d, f'<circle r="34" fill="{C}"/><path d="M-20 -8Q0 -24 20 -8" stroke="{PA}" stroke-width="4" fill="none"/>', [P(t, 120, y - 40, 1, 0), P(t + .1, 120, y - 40), P(t + .9, 500, y, 1, 1), P(t + 1.0, 500, y, 1.0, 1, 1), P(t + 1.12, 506, y, .85, 1.1), P(t + 1.9, 150, y + 80, 1, 0)])
     b += d.el("circle", f'cx="560" cy="{y}" r="20" fill="none" stroke="{G}" stroke-width="4" class="b"', [(0, "opacity:0;transform:scale(.3)"), (t + 1.0, "opacity:0;transform:scale(.3)"), (t + 1.1, "opacity:.8;transform:scale(1)"), (t + 1.6, "opacity:0;transform:scale(3)")], "ease-out")
 save("yeso-impacto", d, b)
 
@@ -235,12 +235,12 @@ save("yeso-cleaneo", d, b)
 # 21 Fibrocemento: fachada ventilada
 d = scene("Planchas de fibrocemento: la fachada resiste la lluvia y ventila", TAB)
 b = f'<rect width="1092" height="26" fill="{TAB}"/><rect x="0" y="26" width="1092" height="1066" fill="{PL}"/>'
-b += "".join(f'<rect x="560" y="{150+k*190}" width="70" height="178" fill="{PA}" stroke="{G}" stroke-width="5"/>' for k in range(4)) + thin(700, 150, 28, 760, G) + thin(750, 150, 220, 760, PA) + fibers(750, 150, 220, 760, 30, 80, G, 1, PA, 4, .5)
+b += "".join(f'<rect x="560" y="{150+k*190}" width="70" height="178" fill="{PA}" stroke="{G}" stroke-width="4"/>' for k in range(4)) + thin(700, 150, 24, 760, G) + thin(750, 150, 220, 760, PA) + fibers(750, 150, 220, 760, 30, 80, G, 1, PA, 4, .5)
 for k in range(10):
     x = 300 + (k % 5) * 50; t = .1 + k * .7
     b += mv(d, f'<path d="M0 -16C12 -2 14 8 0 16C-14 8 -12 -2 0 -16Z" fill="{M}"/>', [P(t, x, 120, 1, 0), P(t + .1, x, 120), P(t + 1.2, 540 - (k % 3) * 8, 300 + (k % 4) * 150), P(t + 1.4, 540, 300 + (k % 4) * 150 + 10, .9, 0.0)])
     b += mv(d, f'<path d="M0 -16C12 -2 14 8 0 16C-14 8 -12 -2 0 -16Z" fill="{M}"/>', [P(t + 1.3, 548, 300 + (k % 4) * 150 + 10, .9, .7), P(t + 2.3, 550, 520 + (k % 4) * 100, .6, 0)])
-for k in range(5): b += mv(d, f'<path d="M0 0V-60" stroke="{M}" stroke-width="7" stroke-linecap="round"/><path d="M-12 -44L0 -62L12 -44" fill="none" stroke="{M}" stroke-width="6" stroke-linecap="round"/>', [P(.4 + k * 1.4, 665, 880, 1, 0), P(.5 + k * 1.4, 665, 880), P(2.2 + k * 1.4, 665, 200), P(2.3 + k * 1.4, 665, 180, 1, 0)])
+for k in range(5): b += mv(d, f'<path d="M0 0V-60" stroke="{M}" stroke-width="7" stroke-linecap="round"/><path d="M-12 -44L0 -62L12 -44" fill="none" stroke="{M}" stroke-width="7" stroke-linecap="round"/>', [P(.4 + k * 1.4, 665, 880, 1, 0), P(.5 + k * 1.4, 665, 880), P(2.2 + k * 1.4, 665, 200), P(2.3 + k * 1.4, 665, 180, 1, 0)])
 b += sun(900, 90) if False else ""
 save("fibrocemento", d, b)
 print("ok")

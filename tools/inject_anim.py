@@ -1,0 +1,18 @@
+"""Inserta la descarga animada en index.html (idempotente). Uso: python3 tools/inject_anim.py"""
+import re
+p = "index.html"; s = open(p, encoding="utf8").read()
+js = open("tools/anim_download.js", encoding="utf8").read()
+# 1) botón en tarjetas de fondos, manejador y editor
+a = '<button type="button" class="cp" data-k="svg">Copiar SVG</button></span></figcaption></figure>\''
+if 'data-k="anim">Descargar animado</button></span></figcaption>' not in s:
+    assert a in s; s = s.replace(a, '<button type="button" class="cp" data-k="svg">Copiar SVG</button><button type="button" class="cp" data-k="anim">Descargar animado</button></span></figcaption></figure>\'', 1)
+old = "if(b.dataset.k==='ed')openEd(i);else copy(b,i,b.dataset.k)"
+if "MA.wp(b" not in s:
+    assert old in s; s = s.replace(old, "if(b.dataset.k==='ed')openEd(i);else if(b.dataset.k==='anim')MA.wp(b,build(i,fmt),String(WP[i].n).padStart(2,'0'),WP[i].name,fmt);else copy(b,i,b.dataset.k)", 1)
+e = '<button type="button" class="btn2 dark" id="ed-svg">Copiar SVG</button>'
+if 'id="ed-anim"' not in s:
+    assert e in s; s = s.replace(e, e + '<button type="button" class="btn2 dark" id="ed-anim">Descargar animado</button>', 1)
+# 2) script
+s = re.sub(r'<script>/\*ANIM-JS\*/.*?/\*/ANIM-JS\*/</script>\n?', '', s, flags=re.S)
+s = s.replace('</body>', '<script>/*ANIM-JS*/\n' + js + '\n/*/ANIM-JS*/</script>\n</body>')
+open(p, "w", encoding="utf8").write(s); print("ok")

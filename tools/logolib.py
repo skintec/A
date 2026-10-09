@@ -9,15 +9,16 @@ RM = "@media (prefers-reduced-motion:reduce){*{animation:none!important}}"
 
 class Doc:
     def __init__(s, bg, label):
-        s.css, s.n, s.bg, s.label = [], 0, bg, label
+        s.css, s.n, s.bg, s.label, s.k = [], 0, bg, label, 1.0  # k: factor de tiempo (k<1 acelera y acorta el bucle)
     def kf(s, frames, ease=EASE):
         """frames: [(t, 'css'), ...] en segundos absolutos -> nombre de animación"""
-        s.n += 1; k = f"k{s.n}"
+        s.n += 1; k = f"k{s.n}"; TT = T * s.k
+        frames = [(min(t * s.k, TT), c) for t, c in frames]
         fr = [(0.0, f[1]) if i == 0 and f[0] > 0 else f for i, f in enumerate(frames)]
         if frames[0][0] > 0: fr = [(0, frames[0][1])] + list(frames)
-        if fr[-1][0] < T: fr = fr + [(T, fr[-1][1])]
-        body = "".join(f"{t/T*100:.3f}%{{{c}}}" for t, c in fr)
-        s.css.append(f"@keyframes {k}{{{body}}}.{k}{{animation:{k} {T}s {ease} infinite}}")
+        if fr[-1][0] < TT: fr = fr + [(TT, fr[-1][1])]
+        body = "".join(f"{t/TT*100:.3f}%{{{c}}}" for t, c in fr)
+        s.css.append(f"@keyframes {k}{{{body}}}.{k}{{animation:{k} {TT:.2f}s {ease} infinite}}")
         return k
     def el(s, tag, attrs, frames, ease=EASE, extra=""):
         k = s.kf(frames, ease)
