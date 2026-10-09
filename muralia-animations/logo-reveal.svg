@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" role="img" aria-label="muralia.cl">
+  <style>
+    .bg{fill:#F8F4EC}
+    .word{font:800 150px/1 "Poppins","Montserrat","Helvetica Neue",Arial,sans-serif;letter-spacing:-4px}
+    .cl{font:700 56px "Poppins","Montserrat",Arial,sans-serif;fill:#FF3D57;opacity:0;animation:cl 1s 2.2s ease-out forwards}
+    .line{stroke-dasharray:640;stroke-dashoffset:640;animation:draw 1.2s 1.6s cubic-bezier(.6,0,.2,1) forwards}
+    @keyframes draw{to{stroke-dashoffset:0}}
+    @keyframes cl{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+  </style>
+  <defs>
+    <linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#FF3D57"/><stop offset=".5" stop-color="#FFB703"/><stop offset="1" stop-color="#00B4D8"/></linearGradient>
+    <clipPath id="c"><rect x="0" y="0" width="0" height="300"><animate attributeName="width" from="0" to="820" begin="0.3s" dur="1.6s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines=".7 0 .2 1"/></rect></clipPath>
+  </defs>
+  <rect class="bg" width="800" height="300"/>
+  <g clip-path="url(#c)">
+    <text class="word" x="60" y="190" fill="#2B2D42">mural<tspan fill="url(#g)">ia</tspan></text>
+  </g>
+  <path class="line" d="M62 228 C 200 205, 330 250, 480 225 S 640 215, 740 232" fill="none" stroke="url(#g)" stroke-width="12" stroke-linecap="round"/>
+  <text class="cl" x="615" y="105" style="animation-fill-mode:forwards">.cl</text>
+</svg>
