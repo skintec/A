@@ -190,6 +190,7 @@ window.MA=(function(){
     let done=false;
     if(opts.slide){slide(c,opts.slide);done=true}
     else if(opts.deform){MA.deform(c);done=true}
+    else if(opts.deformWall){MA.deformWall(c);done=true}
     else if(opts.alive!==undefined&&MA.ICONS[opts.alive]){MA.ICONS[opts.alive](c);done=true}
     else if(opts.recipe&&MA.WALL[opts.recipe]){MA.WALL[opts.recipe](c);done=true}
     if(!done){
