@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Fondo animado">
+  <defs><filter id="b" filterUnits="userSpaceOnUse" x="-400" y="-400" width="2000" height="1400"><feGaussianBlur stdDeviation="45"/></filter></defs>
+  <style>
+    .b{filter:url(#b);opacity:.85;mix-blend-mode:multiply}
+    .a{animation:f1 14s ease-in-out infinite alternate}.c{animation:f2 17s ease-in-out infinite alternate}.e{animation:f3 20s ease-in-out infinite alternate}
+    @keyframes f1{to{transform:translate(300px,80px) scale(1.3)}}
+    @keyframes f2{to{transform:translate(-280px,120px) scale(.8)}}
+    @keyframes f3{to{transform:translate(200px,-150px) scale(1.2)}}
+  </style>
+  <rect width="1200" height="600" fill="#F8F4EC"/>
+  <circle class="b a" cx="250" cy="200" r="170" fill="#FF3D57"/>
+  <circle class="b c" cx="900" cy="250" r="190" fill="#00B4D8"/>
+  <circle class="b e" cx="600" cy="450" r="160" fill="#FFB703"/>
+  <circle class="b a" cx="1000" cy="500" r="120" fill="#7B2CBF" style="animation-duration:19s"/>
+</svg>

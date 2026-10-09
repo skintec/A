@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Cargando">
+  <style>
+    .r{fill:none;stroke-linecap:round;stroke-width:14;transform-origin:100px 100px;stroke-dasharray:140 360;animation:spin 1.8s cubic-bezier(.6,0,.4,1) infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
+  <rect width="200" height="200" fill="#F8F4EC"/>
+  <circle class="r" cx="100" cy="100" r="70" stroke="#FF3D57"/>
+  <circle class="r" cx="100" cy="100" r="50" stroke="#FFB703" style="animation-delay:-.15s"/>
+  <circle class="r" cx="100" cy="100" r="30" stroke="#00B4D8" style="animation-delay:-.3s"/>
+</svg>
