@@ -95,7 +95,7 @@
     spec=sp;ensure();
     dlg.querySelector('#ma-t').textContent=sp.title;dlg.querySelector('#ma-s').textContent=sp.sub;
     const fs=dlg.querySelector('#ma-modes');fs.hidden=sp.modes.length<2;
-    fs.innerHTML='<legend>Animación</legend>'+sp.modes.map((m,i)=>'<label><input type="radio" name="ma-m" value="'+m.id+'"'+(i===0?' checked':'')+'> '+m.label+' <small>'+m.hint+'</small></label>').join('');
+    fs.innerHTML='<legend>Animación</legend>'+sp.modes.map((m,i)=>'<label><input type="radio" name="ma-m" value="'+m.id+'"'+((sp.defaultMode&&sp.modes.some(x=>x.id===sp.defaultMode)?m.id===sp.defaultMode:i===0)?' checked':'')+'> '+m.label+' <small>'+m.hint+'</small></label>').join('');
     dlg.querySelector('input[name="ma-f"][value="svg"]').checked=true;
     const same=sp.current()===sp.original();const org=dlg.querySelector('input[name="ma-c"][value="org"]'),cu=dlg.querySelector('input[name="ma-c"][value="cur"]');
     cu.checked=true;org.disabled=same;org.closest('label').style.opacity=same?.5:1;
@@ -112,6 +112,9 @@
   MA.open=open;MA.slug=slug;
 
   /* ---------- elementos ---------- */
+  const cst=document.createElement('style');
+  cst.textContent='.anm{display:flex;gap:4px;flex-wrap:wrap;align-items:center;grid-column:1/-1;margin:2px 0 4px}.anm span{font:700 11px Archivo,sans-serif;color:#9C4318;margin-right:2px;letter-spacing:.6px;text-transform:uppercase}.anm button{appearance:none;border:1px solid #DDD5C4;background:#FFFDF9;font:700 11px Archivo,sans-serif;padding:3px 8px;cursor:pointer;color:#2B2A26}.anm button:hover{border-color:#C2551F}.anm button[aria-pressed="true"]{background:#2B2A26;color:#FFFDF9;border-color:#2B2A26}';
+  document.head.appendChild(cst);
   const ORG_INK='#2B2A26',ORG_TILE='#FFFDF9',MK={};   // MK: número elegido por marcador
   const FRANJA=i=>MA.FP[i]!==undefined;
   function modesFor(i){
@@ -140,22 +143,36 @@
     const nm=()=>f.querySelector('.nm').textContent,num=()=>f.querySelector('.n').textContent;
     b.addEventListener('click',()=>{
       const mk=MK[i]!==undefined?'-n'+MK[i]:'';
-      MA.open({title:nm()+(MK[i]!==undefined?' '+MK[i]:''),sub:'Elemento '+num()+(FRANJA(i)?' · puede deslizarse además de aparecer':''),bg:false,pw:512,ph:(()=>{const m=window.elSvg(i).match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/);return Math.round(512*m[2]/m[1])})(),
+      MA.open({defaultMode:f._modeSel&&f._modeSel(),title:nm()+(MK[i]!==undefined?' '+MK[i]:''),sub:'Elemento '+num()+(FRANJA(i)?' · puede deslizarse además de aparecer':''),bg:false,pw:512,ph:(()=>{const m=window.elSvg(i).match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/);return Math.round(512*m[2]/m[1])})(),
         gw:360,gh:360,vw:720,vh:720,file:'muralia-elemento-'+num()+'-'+slug(nm())+mk,modes:modesFor(i),
         current:()=>window.elSvg(i),original:()=>fixNum(origSvg(i),i),
         bgCur:getComputedStyle(document.documentElement).getPropertyValue('--tile').trim()||ORG_TILE,bgOrg:ORG_TILE});
     });
-    /* vista previa al pasar el cursor: aparición o movimiento propio */
-    const pv=f.querySelector('.pv');let url=null,saved=null;
-    pv.addEventListener('mouseenter',async()=>{
-      const svg=pv.querySelector('svg');if(!svg)return;const r=svg.getBoundingClientRect();
-      const ms=modesFor(i),m=ms[ms.length>1&&!FRANJA(i)?1:(FRANJA(i)?1:0)];
-      let s=await MA.withFonts(MA.sized(window.elSvg(i),Math.round(r.width*2),Math.round(r.height*2)));
-      if(!pv.matches(':hover'))return;
-      saved=pv.innerHTML;url=URL.createObjectURL(new Blob([MA.animate(s,Object.assign({bg:false},MA.ropts(),m.opts))],{type:'image/svg+xml'}));
+    /* elegir y ver cada animación directamente en la tarjeta (sin abrir el diálogo) */
+    const pv=f.querySelector('.pv');let url=null,saved=null,pinned=false,sel=null;
+    const ms=modesFor(i),SHORT={aparicion:'Aparición',movimiento:'Movimiento','desliza-derecha':'Deslizar →','desliza-izquierda':'Deslizar ←',deformacion:'Deformación'};
+    const dflt=()=>(ms.find(m=>m.id==='movimiento')||ms.find(m=>/^desliza/.test(m.id))||ms[0]).id;
+    const chips=document.createElement('div');chips.className='anm';chips.setAttribute('role','group');chips.setAttribute('aria-label','Tipo de animación');
+    chips.innerHTML='<span>Ver:</span>'+ms.map(m=>'<button type="button" data-m="'+m.id+'" aria-pressed="false" title="'+m.hint+'">'+SHORT[m.id]+'</button>').join('');
+    acts.parentNode.insertBefore(chips,acts);
+    const stop=()=>{if(saved!==null){pv.innerHTML=saved;saved=null}if(url){URL.revokeObjectURL(url);url=null}};
+    async function play(id,pin){
+      const m=ms.find(x=>x.id===id)||ms[0];stop();const svg=pv.querySelector('svg');if(!svg)return;const r=svg.getBoundingClientRect();
+      const s2=await MA.withFonts(MA.sized(window.elSvg(i),Math.round(r.width*2),Math.round(r.height*2)));
+      if(!pin&&!pv.matches(':hover'))return;if(pin&&!pinned)return;
+      saved=pv.innerHTML;url=URL.createObjectURL(new Blob([MA.animate(s2,Object.assign({bg:false},MA.ropts(),m.opts))],{type:'image/svg+xml'}));
       pv.innerHTML='<img class="hv" alt="" src="'+url+'" style="width:'+r.width+'px;height:'+r.height+'px">';
-    });
-    pv.addEventListener('mouseleave',()=>{if(saved!==null){pv.innerHTML=saved;saved=null}if(url){URL.revokeObjectURL(url);url=null}});
+    }
+    chips.querySelectorAll('button').forEach(c=>c.addEventListener('click',()=>{
+      const same=c.getAttribute('aria-pressed')==='true';
+      chips.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));
+      if(same){sel=null;pinned=false;stop();return}
+      sel=c.dataset.m;c.setAttribute('aria-pressed','true');pinned=true;play(sel,true);
+    }));
+    pv.addEventListener('mouseenter',()=>{if(!pinned)play(sel||dflt(),false)});
+    pv.addEventListener('mouseleave',()=>{if(!pinned)stop()});
+    b.addEventListener('click',()=>{/* el diálogo parte con la animación elegida en las pestañas */});
+    f._modeSel=()=>sel;
     /* marcadores: número editable */
     if(i===122||i===123){
       const w=document.createElement('div');w.className='mkn';
