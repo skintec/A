@@ -1,0 +1,18 @@
+/* Muralia — design tokens */
+:root{
+  --clay:#C2551F;
+  --clay-dark:#9c4318;
+  --moss:#3E4A3C;
+  --graphite:#2B2A26;
+  --plaster:#EFE7DA;
+  --paper:#FFFDF9;
+
+  /* Tipografías (Google Fonts, licencia comercial abierta) */
+  --font-display:'Alfa Slab One','Big Shoulders Display',serif;
+  --font-condensed:'Big Shoulders Display','Anton','Oswald',sans-serif;
+  --font-heading:'Anton','Oswald',sans-serif;
+  --font-body:'Oswald',system-ui,sans-serif;
+
+  /* Escala tipográfica de 4 pasos: --fs-lead, --fs-body-sm, --fs-meta, --fs-label
+     (valores exactos en styles.css de muralia.cl) */
+}
