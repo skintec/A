@@ -48,7 +48,7 @@ WEB = [
  vid("loader", V("loader", "Cargador", "Grilla de 3 × 3 que pulsa"), kind="img"),
  vid("hero-grid", V("hero-grid", "Fondo técnico", "Grilla con cuadrados que derivan, para portadas"), kind="img"),
 ]
-def mat(f, t, d): return vid("mat-" + f, V("mat-" + f, t, d))
+def mat(f, t, d): return vid("mat-" + f, V("mat-" + f, t, d), V("mat-" + f + "-v2", t, d, 2))  # v2: más dinámica y con trazo uniforme
 MATS = [("Funcionamiento de los materiales · Aislación térmica y acústica", [
  mat("lana-vidrio-pp", "Lana de vidrio con polipropileno blanco", "Aísla bajo la cubierta del galpón: frena calor y ruido de lluvia, y la cara blanca refleja la luz."),
  mat("panel-velo-negro", "Panel velo negro", "Panel rígido detrás de fachadas con juntas abiertas: el velo negro no se nota y aísla térmica y acústicamente."),
