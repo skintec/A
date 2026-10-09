@@ -2,6 +2,12 @@
    Índices = posición en la lista de elementos de la biblioteca. n = ciclos dentro de los 6 s. */
 (function(){
   const I=MA.ICONS,F=MA.FP;
+  /* deformación: el elemento se estira y se comprime como un cuerpo blando (gelatina); las franjas ondulan a lo largo */
+  MA.deform=c=>{
+    const w=c.vb[2],h=c.vb[3];
+    if(w/h>4)c.wave(c.L,'ma-bendw',2,3,{o:'50% 50%'});
+    else c.L.forEach((e,i)=>c.a(e,'ma-jelly',3,{p:[w/2,h*.62],delay:i*.09}));
+  };
   const fire=(c,el,n,o)=>c.a(el,'ma-flicker',n||4,Object.assign({o:'50% 100%',ease:'ease-in-out'},o||{}));
   const smoke=(c,x,y)=>{const e=c.add('<circle cx="'+x+'" cy="'+y+'" r="2.4"/><circle cx="'+(x+3)+'" cy="'+(y-4)+'" r="1.8"/>');
     e.forEach((k,i)=>c.a(k,'ma-smoke',2,{delay:i*.7,o:'50% 50%'}))};
