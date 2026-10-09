@@ -1,0 +1,9 @@
+{
+  "clay":       { "hex": "#C2551F", "rol": "Acento primario (terracota). Botones, CTAs, logo en color, énfasis" },
+  "clay-dark":  { "hex": "#9C4318", "rol": "Hover/estado activo del acento" },
+  "moss":       { "hex": "#3E4A3C", "rol": "Secundario (verde musgo). Fondos oscuros, bloques de contraste" },
+  "graphite":   { "hex": "#2B2A26", "rol": "Texto principal y fondos oscuros" },
+  "plaster":    { "hex": "#EFE7DA", "rol": "Fondo cálido de secciones alternas" },
+  "paper":      { "hex": "#FFFDF9", "rol": "Fondo base de página" },
+  "prohibidos": ["azul", "celeste", "rojo"]
+}
