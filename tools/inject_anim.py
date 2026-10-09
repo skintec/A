@@ -14,6 +14,12 @@ if "openWpAnim(WP[i]" not in s:
 e = '<button type="button" class="btn2 dark" id="ed-svg">Copiar SVG</button>'
 if 'id="ed-anim"' not in s:
     assert e in s; s = s.replace(e, e + '<button type="button" class="btn2 dark" id="ed-anim">Descargar animado</button>', 1)
+# 1b) botón "Vista animada" en cada fondo
+if 'data-k="live"' not in s:
+    a2 = '<button type="button" class="cp" data-k="anim">Descargar animado</button></span></figcaption></figure>\''
+    assert a2 in s; s = s.replace(a2, '<button type="button" class="cp" data-k="live">Vista animada</button><button type="button" class="cp" data-k="anim">Descargar animado</button></span></figcaption></figure>\'', 1)
+    o2 = "else if(b.dataset.k==='anim')openWpAnim(WP[i],build(i,fmt),fmt);"
+    assert o2 in s; s = s.replace(o2, "else if(b.dataset.k==='live')MA.live.toggle(f.querySelector('.th'),WP[i].slug,b);" + o2, 1)
 # 2) script
 s = re.sub(r'<script>/\*ANIM-JS\*/.*?/\*/ANIM-JS\*/</script>\n?', '', s, flags=re.S)
 s = s.replace('</body>', '<script>/*ANIM-JS*/\n' + js + '\n/*/ANIM-JS*/</script>\n</body>')
