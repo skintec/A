@@ -7,8 +7,10 @@ a = '<button type="button" class="cp" data-k="svg">Copiar SVG</button></span></f
 if 'data-k="anim">Descargar animado</button></span></figcaption>' not in s:
     assert a in s; s = s.replace(a, '<button type="button" class="cp" data-k="svg">Copiar SVG</button><button type="button" class="cp" data-k="anim">Descargar animado</button></span></figcaption></figure>\'', 1)
 old = "if(b.dataset.k==='ed')openEd(i);else copy(b,i,b.dataset.k)"
-if "MA.wp(b" not in s:
-    assert old in s; s = s.replace(old, "if(b.dataset.k==='ed')openEd(i);else if(b.dataset.k==='anim')MA.wp(b,build(i,fmt),String(WP[i].n).padStart(2,'0'),WP[i].name,fmt);else copy(b,i,b.dataset.k)", 1)
+new = "if(b.dataset.k==='ed')openEd(i);else if(b.dataset.k==='anim')openWpAnim(WP[i],build(i,fmt),fmt);else copy(b,i,b.dataset.k)"
+s = re.sub(r"else if\(b\.dataset\.k==='anim'\)MA\.wp\(.*?\);else copy\(b,i,b\.dataset\.k\)", "else if(b.dataset.k==='anim')openWpAnim(WP[i],build(i,fmt),fmt);else copy(b,i,b.dataset.k)", s, flags=re.S)
+if "openWpAnim(WP[i]" not in s:
+    assert old in s; s = s.replace(old, new, 1)
 e = '<button type="button" class="btn2 dark" id="ed-svg">Copiar SVG</button>'
 if 'id="ed-anim"' not in s:
     assert e in s; s = s.replace(e, e + '<button type="button" class="btn2 dark" id="ed-anim">Descargar animado</button>', 1)
