@@ -15,12 +15,16 @@
      +'#ma .row{display:flex;gap:8px;flex-wrap:wrap}#ma button{appearance:none;border:1px solid #DDD5C4;background:#FFFDF9;font:600 13px Archivo,sans-serif;padding:9px 14px;cursor:pointer;color:#2B2A26}'
      +'#ma button.dark{background:#2B2A26;color:#FFFDF9;border-color:#2B2A26}#ma button:disabled{opacity:.5;cursor:wait}#ma .bar{height:6px;background:#DDD5C4}#ma .bar i{display:block;height:100%;width:0;background:#C2551F}#ma .msg{font-size:12.5px;color:#5a594f;min-height:1.2em}'
      +'.mkn{display:flex;gap:6px;align-items:center;grid-column:1/-1;font:600 12px Archivo,sans-serif;color:#5a594f}.mkn input[type=text]{width:46px;font:700 13px Archivo;padding:3px 5px;border:1px solid #DDD5C4;background:#FFFDF9;text-align:center}.mkn label{display:flex;gap:4px;align-items:center;font-weight:500}'
-     +'.pv .hv{display:block}';
+     +'.pv .hv{display:block}#ma .sl{display:grid;grid-template-columns:84px 1fr 48px;gap:8px;align-items:center}#ma .sl input{width:100%;accent-color:#C2551F}#ma .sl b{font-size:13px;text-align:right}#ma .sl.off{opacity:.45}';
     document.head.appendChild(st);
     dlg=document.createElement('div');dlg.id='ma';dlg.hidden=true;
     dlg.innerHTML='<div class="box" role="dialog" aria-modal="true" aria-labelledby="ma-t"><div class="pv"><img alt="Vista previa animada"><button type="button" class="rs" id="ma-rs">Reiniciar</button></div><div class="sd">'
      +'<div><h3 id="ma-t"></h3><div class="sub" id="ma-s"></div></div>'
      +'<fieldset id="ma-modes"><legend>Animación</legend></fieldset>'
+     +'<fieldset id="ma-rhythm"><legend>Ritmo</legend>'
+     +'<label class="sl"><span>Velocidad</span><input type="range" id="ma-sp" min="0.5" max="3" step="0.25" value="1"><b id="ma-spv">1×</b></label>'
+     +'<label class="sl"><span>Intensidad</span><input type="range" id="ma-in" min="0" max="2" step="0.25" value="1"><b id="ma-inv">100%</b></label>'
+     +'<div class="sub" id="ma-rn"></div><button type="button" id="ma-rr" style="justify-self:start">Restablecer ritmo</button></fieldset>'
      +'<fieldset><legend>Formato</legend><label><input type="radio" name="ma-f" value="svg" checked> SVG animado <small>vectorial, para web</small></label>'
      +'<label><input type="radio" name="ma-f" value="gif"> GIF <small>funciona en cualquier lugar</small></label>'
      +'<label><input type="radio" name="ma-f" value="vid"> Video <small>MP4 o WebM, según tu navegador</small></label></fieldset>'
@@ -38,7 +42,8 @@
   const svgNow=()=>val('ma-c')==='org'?spec.original():spec.current();
   const bgNow=()=>val('ma-c')==='org'?spec.bgOrg:spec.bgCur;
   const modeNow=()=>spec.modes.find(m=>m.id===val('ma-m'))||spec.modes[0];
-  const aopts=()=>Object.assign({bg:spec.bg},modeNow().opts);
+  const spd=()=>+dlg.querySelector('#ma-sp').value,inten=()=>+dlg.querySelector('#ma-in').value;
+  const aopts=()=>Object.assign({bg:spec.bg,speed:spd(),intensity:inten()},modeNow().opts);
   async function preview(){
     const my=++token,im=dlg.querySelector('.pv img');
     const base=await MA.withFonts(MA.sized(svgNow(),spec.pw,spec.ph));if(my!==token)return;
@@ -47,7 +52,7 @@
   }
   async function run(){
     const go=dlg.querySelector('#ma-go'),bar=dlg.querySelector('.bar'),fill=bar.firstChild,msg=dlg.querySelector('.msg');
-    const f=val('ma-f'),m=modeNow(),base=spec.file+'-'+m.id+(val('ma-c')==='org'?'-original':'');
+    const f=val('ma-f'),m=modeNow(),base=spec.file+'-'+m.id+(val('ma-c')==='org'?'-original':'')+(spd()!==1?'-vel'+spd():'')+(inten()!==1&&m.intensity!==false?'-int'+Math.round(inten()*100):'');
     go.disabled=true;msg.textContent='';
     try{
       const svgStr=await MA.withFonts(svgNow());
@@ -69,6 +74,14 @@
     }catch(e){msg.textContent='No se pudo generar: '+(e&&e.message||e)}
     finally{go.disabled=false;setTimeout(()=>{bar.hidden=true},1200)}
   }
+  let tmr=null;
+  function rhythmUI(){
+    const sp=spd(),inn=inten(),m=modeNow();
+    dlg.querySelector('#ma-spv').textContent=sp+'×';dlg.querySelector('#ma-inv').textContent=Math.round(inn*100)+'%';
+    const off=m.intensity===false;dlg.querySelector('#ma-in').disabled=off;dlg.querySelector('#ma-in').closest('label').classList.toggle('off',off);
+    dlg.querySelector('#ma-rn').textContent='Cada vuelta dura '+(MA.P/sp).toFixed(1).replace('.0','')+' s'+(off?' · la intensidad no se aplica a esta animación':'')+'.';
+  }
+  function rhythmChange(){rhythmUI();clearTimeout(tmr);tmr=setTimeout(preview,140)}
   function open(sp){
     spec=sp;ensure();
     dlg.querySelector('#ma-t').textContent=sp.title;dlg.querySelector('#ma-s').textContent=sp.sub;
@@ -78,7 +91,12 @@
     const same=sp.current()===sp.original();const org=dlg.querySelector('input[name="ma-c"][value="org"]'),cu=dlg.querySelector('input[name="ma-c"][value="cur"]');
     cu.checked=true;org.disabled=same;org.closest('label').style.opacity=same?.5:1;
     dlg.querySelector('.msg').textContent=same?'Estás usando los colores originales.':'';dlg.querySelector('.bar').hidden=true;
-    dlg.querySelectorAll('input[name="ma-c"],input[name="ma-m"]').forEach(r=>r.onchange=preview);
+    dlg.querySelectorAll('input[name="ma-c"]').forEach(r=>r.onchange=preview);
+    dlg.querySelectorAll('input[name="ma-m"]').forEach(r=>r.onchange=()=>{rhythmUI();preview()});
+    dlg.querySelector('#ma-sp').value=1;dlg.querySelector('#ma-in').value=1;
+    dlg.querySelector('#ma-sp').oninput=dlg.querySelector('#ma-in').oninput=rhythmChange;
+    dlg.querySelector('#ma-rr').onclick=()=>{dlg.querySelector('#ma-sp').value=1;dlg.querySelector('#ma-in').value=1;rhythmChange()};
+    rhythmUI();
     dlg.querySelector('#ma-go').onclick=run;
     dlg.hidden=false;dlg.querySelector('#ma-go').focus();preview();
   }
@@ -88,10 +106,10 @@
   const ORG_INK='#2B2A26',ORG_TILE='#FFFDF9',MK={};   // MK: número elegido por marcador
   const FRANJA=i=>MA.FP[i]!==undefined;
   function modesFor(i){
-    const m=[{id:'aparicion',label:'Aparición',hint:'se dibuja trazo a trazo',opts:{}}];
+    const m=[{id:'aparicion',label:'Aparición',hint:'se dibuja trazo a trazo',opts:{},intensity:false}];
     if(FRANJA(i)){
-      m.push({id:'desliza-derecha',label:'Deslizar →',hint:'sin aparecer ni desaparecer, fija en el eje y',opts:{slide:{p:MA.FP[i],dir:1}}});
-      m.push({id:'desliza-izquierda',label:'Deslizar ←',hint:'mismo movimiento en sentido contrario',opts:{slide:{p:MA.FP[i],dir:-1}}});
+      m.push({id:'desliza-derecha',label:'Deslizar →',hint:'sin aparecer ni desaparecer, fija en el eje y',opts:{slide:{p:MA.FP[i],dir:1}},intensity:false});
+      m.push({id:'desliza-izquierda',label:'Deslizar ←',hint:'mismo movimiento en sentido contrario',opts:{slide:{p:MA.FP[i],dir:-1}},intensity:false});
     }else if(MA.ICONS[i]&&!(i>=54&&i<=76)&&!(i>=117&&i<=121)){
       m.push({id:'movimiento',label:'Movimiento propio',hint:'se mueve como lo haría el objeto',opts:{alive:i}});
     }
@@ -147,7 +165,7 @@
     MA.open({title:w.name,sub:'Fondo '+num+' · '+(h?'horizontal 1920 × 1080':'vertical 1080 × 1920'),bg:true,
       pw:h?960:540,ph:h?540:960,gw:h?640:360,gh:h?360:640,vw:h?960:540,vh:h?540:960,
       file:'muralia-fondo-'+num+'-'+slug(w.name)+'-'+(h?'horizontal':'vertical'),
-      modes:[{id:'segun-diseno',label:'Según su diseño',hint:'se mueve como el dibujo sugiere',opts:{recipe:w.slug}},{id:'aparicion',label:'Aparición',hint:'se dibuja o aparece',opts:{}}],
+      modes:[{id:'segun-diseno',label:'Según su diseño',hint:'se mueve como el dibujo sugiere',opts:{recipe:w.slug}},{id:'aparicion',label:'Aparición',hint:'se dibuja o aparece',opts:{},intensity:false}],
       current:()=>cur,original:()=>org,bgCur:'#FFFDF9',bgOrg:'#FFFDF9'});
   };
   const ea=document.getElementById('ed-anim');

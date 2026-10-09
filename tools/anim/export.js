@@ -4,7 +4,7 @@
   function loadImg(svgStr){return new Promise((res,rej)=>{const u=URL.createObjectURL(new Blob([svgStr],{type:'image/svg+xml'}));const im=new Image();im.onload=()=>{URL.revokeObjectURL(u);res(im)};im.onerror=e=>{URL.revokeObjectURL(u);rej(e)};im.src=u})}
   function sized(svgStr,W,H){return svgStr.replace(/<svg /,'<svg width="'+W+'" height="'+H+'" ')}
   async function frames(svgStr,aopts,bgColor,W,H,fps,onp,getData){
-    const n=Math.round(P*fps),cv=document.createElement('canvas');cv.width=W;cv.height=H;
+    const n=Math.round(P/(aopts.speed||1)*fps),cv=document.createElement('canvas');cv.width=W;cv.height=H;
     const ctx=cv.getContext('2d',{willReadFrequently:!!getData}),out=[];
     for(let k=0;k<n;k++){
       const im=await loadImg(sized(MA.animate(svgStr,Object.assign({},aopts,{t:k/fps})),W,H));
