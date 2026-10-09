@@ -1,7 +1,7 @@
 """Inserta la descarga animada en index.html (idempotente). Uso: python3 tools/inject_anim.py"""
 import re
 p = "index.html"; s = open(p, encoding="utf8").read()
-js = "\n".join(open(f"tools/anim/{n}.js", encoding="utf8").read() for n in ("core","icons","walls","export","ui"))
+js = "\n".join(open(f"tools/anim/{n}.js", encoding="utf8").read() for n in ("core","icons","deform","walls","export","ui"))
 # 1) botón en tarjetas de fondos, manejador y editor
 a = '<button type="button" class="cp" data-k="svg">Copiar SVG</button></span></figcaption></figure>\''
 if 'data-k="anim">Descargar animado</button></span></figcaption>' not in s:

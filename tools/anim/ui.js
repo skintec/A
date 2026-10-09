@@ -125,7 +125,7 @@
     }else if(MA.ICONS[i]&&!(i>=54&&i<=76)&&!(i>=117&&i<=121)){
       m.push({id:'movimiento',label:'Movimiento propio',hint:'se mueve como lo haría el objeto',opts:{alive:i}});
     }
-    m.push({id:'deformacion',label:'Deformación',hint:'el elemento se estira y se comprime como un cuerpo blando',opts:{deform:true}});
+    m.push({id:'deformacion',label:'Deformación',hint:'el contorno cambia de forma según lo que representa',opts:{deform:true,icon:i}});
     return m;
   }
   const origSvg=i=>RAW[i].replaceAll('currentColor',ORG_INK).replaceAll('var(--bg,#FFFDF9)',ORG_TILE);
