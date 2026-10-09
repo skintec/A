@@ -2,6 +2,15 @@
 (function(){
   const slug=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
   function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
+  /* ritmo compartido (velocidad e intensidad) entre el diálogo, las vistas animadas y el editor; se recuerda en el navegador */
+  const RH=MA.rhythm={speed:1,intensity:1,subs:[]};
+  try{const sv=JSON.parse(localStorage.getItem('muralia-ritmo')||'null');if(sv&&sv.speed>0){RH.speed=+sv.speed;RH.intensity=+sv.intensity}}catch(e){}
+  MA.ropts=()=>({speed:RH.speed,intensity:RH.intensity});
+  function setRhythm(sp,inn,src){
+    RH.speed=sp;RH.intensity=inn;try{localStorage.setItem('muralia-ritmo',JSON.stringify({speed:sp,intensity:inn}))}catch(e){}
+    RH.subs.forEach(f=>f(src));
+  }
+  MA.setRhythm=setRhythm;
   let dlg,spec,token=0;
   function ensure(){
     if(dlg)return dlg;
@@ -81,7 +90,7 @@
     const off=m.intensity===false;dlg.querySelector('#ma-in').disabled=off;dlg.querySelector('#ma-in').closest('label').classList.toggle('off',off);
     dlg.querySelector('#ma-rn').textContent='Cada vuelta dura '+(MA.P/sp).toFixed(1).replace('.0','')+' s'+(off?' · la intensidad no se aplica a esta animación':'')+'.';
   }
-  function rhythmChange(){rhythmUI();clearTimeout(tmr);tmr=setTimeout(preview,140)}
+  function rhythmChange(){rhythmUI();setRhythm(spd(),inten(),'dlg');clearTimeout(tmr);tmr=setTimeout(preview,140)}
   function open(sp){
     spec=sp;ensure();
     dlg.querySelector('#ma-t').textContent=sp.title;dlg.querySelector('#ma-s').textContent=sp.sub;
@@ -93,7 +102,7 @@
     dlg.querySelector('.msg').textContent=same?'Estás usando los colores originales.':'';dlg.querySelector('.bar').hidden=true;
     dlg.querySelectorAll('input[name="ma-c"]').forEach(r=>r.onchange=preview);
     dlg.querySelectorAll('input[name="ma-m"]').forEach(r=>r.onchange=()=>{rhythmUI();preview()});
-    dlg.querySelector('#ma-sp').value=1;dlg.querySelector('#ma-in').value=1;
+    dlg.querySelector('#ma-sp').value=RH.speed;dlg.querySelector('#ma-in').value=RH.intensity;
     dlg.querySelector('#ma-sp').oninput=dlg.querySelector('#ma-in').oninput=rhythmChange;
     dlg.querySelector('#ma-rr').onclick=()=>{dlg.querySelector('#ma-sp').value=1;dlg.querySelector('#ma-in').value=1;rhythmChange()};
     rhythmUI();
@@ -113,6 +122,7 @@
     }else if(MA.ICONS[i]&&!(i>=54&&i<=76)&&!(i>=117&&i<=121)){
       m.push({id:'movimiento',label:'Movimiento propio',hint:'se mueve como lo haría el objeto',opts:{alive:i}});
     }
+    m.push({id:'deformacion',label:'Deformación',hint:'el elemento se estira y se comprime como un cuerpo blando',opts:{deform:true}});
     return m;
   }
   const origSvg=i=>RAW[i].replaceAll('currentColor',ORG_INK).replaceAll('var(--bg,#FFFDF9)',ORG_TILE);
@@ -142,7 +152,7 @@
       const ms=modesFor(i),m=ms[ms.length>1&&!FRANJA(i)?1:(FRANJA(i)?1:0)];
       let s=await MA.withFonts(MA.sized(window.elSvg(i),Math.round(r.width*2),Math.round(r.height*2)));
       if(!pv.matches(':hover'))return;
-      saved=pv.innerHTML;url=URL.createObjectURL(new Blob([MA.animate(s,Object.assign({bg:false},m.opts))],{type:'image/svg+xml'}));
+      saved=pv.innerHTML;url=URL.createObjectURL(new Blob([MA.animate(s,Object.assign({bg:false},MA.ropts(),m.opts))],{type:'image/svg+xml'}));
       pv.innerHTML='<img class="hv" alt="" src="'+url+'" style="width:'+r.width+'px;height:'+r.height+'px">';
     });
     pv.addEventListener('mouseleave',()=>{if(saved!==null){pv.innerHTML=saved;saved=null}if(url){URL.revokeObjectURL(url);url=null}});
@@ -178,19 +188,20 @@
 
   /* ---------- vista previa animada de fondos (sin descargar) ---------- */
   const live={
+    active:new Set(),
     async start(th,slug,pin){
       if(th._saved!==undefined){if(pin)th._pin=true;return}
       const svg=th.querySelector('svg');if(!svg)return;const r=svg.getBoundingClientRect();
-      th._saved=th.innerHTML;th._pin=!!pin;
+      th._saved=th.innerHTML;th._pin=!!pin;live.active.add(th);
       const s=await MA.withFonts(MA.sized(th._saved,Math.round(r.width*2),Math.round(r.height*2)));
       if(th._saved===undefined)return;                    // se salió antes de que terminara de preparar
       const fmtH=th.classList.contains('h')||r.width>r.height;
-      th._url=URL.createObjectURL(new Blob([MA.animate(s,{bg:true,recipe:slug})],{type:'image/svg+xml'}));
+      th._url=URL.createObjectURL(new Blob([MA.animate(s,Object.assign({bg:true,recipe:slug},MA.ropts()))],{type:'image/svg+xml'}));
       th.innerHTML='<img alt="" src="'+th._url+'" style="display:block;width:100%;height:auto">';
     },
     stop(th){
       if(th._saved===undefined)return;
-      th.innerHTML=th._saved;th._saved=undefined;th._pin=false;
+      th.innerHTML=th._saved;th._saved=undefined;th._pin=false;live.active.delete(th);
       if(th._url){URL.revokeObjectURL(th._url);th._url=null}
     },
     toggle(th,slug,btn){
@@ -198,6 +209,29 @@
       else{live.stop(th);live.start(th,slug,true);btn.textContent='Detener vista'}
     }
   };
+
+  /* controles de ritmo (velocidad / intensidad) para las vistas animadas de fondos */
+  function rhythmBox(cls){
+    const d=document.createElement('div');d.className='rit '+(cls||'');
+    d.innerHTML='<b>Ritmo</b><label>Velocidad <input type="range" min="0.5" max="3" step="0.25" data-r="s"><output></output></label><label>Intensidad <input type="range" min="0" max="2" step="0.25" data-r="i"><output></output></label><button type="button" class="btn2">Restablecer</button>';
+    const sI=d.querySelector('[data-r=s]'),iI=d.querySelector('[data-r=i]'),os=sI.nextElementSibling,oi=iI.nextElementSibling;
+    const sync=src=>{sI.value=RH.speed;iI.value=RH.intensity;os.textContent=RH.speed+'×';oi.textContent=Math.round(RH.intensity*100)+'%'};
+    sync();RH.subs.push(src=>{if(src!==d)sync()});
+    const ch=()=>{setRhythm(+sI.value,+iI.value,d);sync()};
+    sI.addEventListener('input',ch);iI.addEventListener('input',ch);
+    d.querySelector('button').addEventListener('click',()=>{setRhythm(1,1,d);sync()});
+    return d;
+  }
+  const rs=document.createElement('style');
+  rs.textContent='.rit{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font:600 12px Archivo,sans-serif;color:#5a594f}.rit b{font:700 12px Archivo;letter-spacing:1.2px;text-transform:uppercase;color:#9C4318}.rit label{display:flex;gap:6px;align-items:center;font-weight:500}.rit input[type=range]{width:96px;accent-color:#C2551F}.rit output{min-width:38px;font-weight:700;color:#2B2A26}.rit.ed{grid-column:1/-1;margin-top:4px}';
+  document.head.appendChild(rs);
+  const wt=document.querySelector('#fondos .wp-head');
+  if(wt){const r=rhythmBox('wp');r.style.marginTop='8px';wt.appendChild(r)}
+  RH.subs.push(src=>{
+    if(src==='dlg')return;
+    [...live.active].forEach(th=>{const f=th.closest('.w');if(!f)return;const pin=th._pin,sl=WP[+f.dataset.i].slug;live.stop(th);live.start(th,sl,pin)});
+    if(window._edLiveOn)window._edLiveOn();
+  });
   MA.live=live;
   const wg=document.getElementById('wgrid');
   if(wg){
@@ -210,15 +244,26 @@
   const acts=document.querySelector('#ed .ed-acts:last-of-type');
   if(acts&&!document.getElementById('ed-live')){
     const b=document.createElement('button');b.type='button';b.className='btn2';b.id='ed-live';b.textContent='Vista animada';acts.insertBefore(b,acts.firstChild);
-    b.addEventListener('click',async()=>{
-      const pv=document.getElementById('ed-pv');
-      if(pv._live){pv.innerHTML=pv._live;pv._live=null;b.textContent='Vista animada';return}
+    const pv=document.getElementById('ed-pv');let on=false,url=null;
+    const show=async()=>{
       const t=document.getElementById('ed-t').textContent,m=t.match(/^(\d+)\s*·\s*(.*)$/);
       const w=m&&WP.find(x=>String(x.n).padStart(2,'0')===m[1]&&x.name===m[2]);if(!w)return;
-      const svg=pv.querySelector('svg');const r=svg.getBoundingClientRect();pv._live=pv.innerHTML;
-      const s=await MA.withFonts(MA.sized(pv._live,Math.round(r.width*2),Math.round(r.height*2)));
-      pv.innerHTML='<img alt="" src="'+URL.createObjectURL(new Blob([MA.animate(s,{bg:true,recipe:w.slug})],{type:'image/svg+xml'}))+'" style="display:block;max-width:100%;max-height:70vh;width:auto;height:auto">';
-      b.textContent='Ver estático';
+      const svg=pv.querySelector('svg');if(!svg){if(!pv._live)return}
+      const r=svg?svg.getBoundingClientRect():{width:pv._w,height:pv._h};pv._w=r.width;pv._h=r.height;
+      if(svg)pv._live=pv.innerHTML;
+      const s2=await MA.withFonts(MA.sized(pv._live,Math.round(r.width*2),Math.round(r.height*2)));
+      if(url)URL.revokeObjectURL(url);
+      url=URL.createObjectURL(new Blob([MA.animate(s2,Object.assign({bg:true,recipe:w.slug},MA.ropts()))],{type:'image/svg+xml'}));
+      pv.innerHTML='<img alt="" src="'+url+'" style="display:block;max-width:100%;max-height:70vh;width:auto;height:auto">';
+      b.textContent='Ver estático';on=true;
+    };
+    window._edLiveOn=()=>{if(on)show()};
+    b.addEventListener('click',()=>{
+      if(on){pv.innerHTML=pv._live;pv._live=null;on=false;b.textContent='Vista animada';if(url){URL.revokeObjectURL(url);url=null}return}
+      show();
     });
+    const box=rhythmBox('ed');acts.parentNode.insertBefore(box,acts.nextSibling);
+    /* si cambian los colores mientras está animado, el editor vuelve a la imagen fija */
+    new MutationObserver(()=>{if(on&&!pv.querySelector('img')){on=false;b.textContent='Vista animada'}}).observe(pv,{childList:true});
   }
 })();

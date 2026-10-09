@@ -48,11 +48,13 @@ window.MA=(function(){
    '@keyframes ma-road{to{stroke-dashoffset:-10}}',
    '@keyframes ma-bump{0%,100%{transform:translateY(0)}25%{transform:translateY(-.8px)}60%{transform:translateY(.3px)}}',
    '@keyframes ma-march{to{stroke-dashoffset:-36}}',
+   '@keyframes ma-jelly{0%,100%{transform:scale(1,1) skewX(0deg)}16%{transform:scale(1.08,.9) skewX(2deg)}32%{transform:scale(.93,1.08) skewX(-2deg)}48%{transform:scale(1.05,.95) skewX(1.2deg)}64%{transform:scale(.98,1.03) skewX(-.8deg)}80%{transform:scale(1.01,.99) skewX(.3deg)}}',
+   '@keyframes ma-bendw{0%,100%{transform:scaleY(1)}25%{transform:scaleY(1.5)}75%{transform:scaleY(.55)}}',
    '@keyframes ma-flow{0%{opacity:0;transform:translateX(-30px)}20%,75%{opacity:1}100%{opacity:0;transform:translateX(40px)}}',
    '@keyframes ma-sweep{0%,100%{transform:scaleX(0)}30%,70%{transform:scaleX(1)}}',
    '@media (prefers-reduced-motion:reduce){*{animation:none!important}}'].join('');
   /* intensidad: acerca o aleja cada fotograma de la posición de reposo (1 = original, 0 = sin movimiento, 2 = el doble) */
-  const SET_T=new Set(['flicker','springx','diag','bob','rise','nr','nl','nu','nur','emit','eq','drop','screw','unroll','swipe','swing','swings','flag','door','bubble','ring','hop','pulse2','exu','exd','mxl','mxr','squash','smoke','bump','flow']);
+  const SET_T=new Set(['flicker','springx','diag','bob','rise','nr','nl','nu','nur','emit','eq','drop','screw','unroll','swipe','swing','swings','flag','door','bubble','ring','hop','pulse2','exu','exd','mxl','mxr','squash','smoke','bump','flow','jelly','bendw']);
   const SET_O=new Set(['dim','blink','twinkle','shine']);
   const f3=v=>(+v).toFixed(3).replace(/\.?0+$/,'');
   function scaleBody(b,i,tr,op){
@@ -187,6 +189,7 @@ window.MA=(function(){
     const c=makeCtx(doc,svg,vb,opts);
     let done=false;
     if(opts.slide){slide(c,opts.slide);done=true}
+    else if(opts.deform){MA.deform(c);done=true}
     else if(opts.alive!==undefined&&MA.ICONS[opts.alive]){MA.ICONS[opts.alive](c);done=true}
     else if(opts.recipe&&MA.WALL[opts.recipe]){MA.WALL[opts.recipe](c);done=true}
     if(!done){
