@@ -54,7 +54,7 @@ window.MA=(function(){
    '@keyframes ma-sweep{0%,100%{transform:scaleX(0)}30%,70%{transform:scaleX(1)}}',
    '@media (prefers-reduced-motion:reduce){*{animation:none!important}}'].join('');
   /* intensidad: acerca o aleja cada fotograma de la posición de reposo (1 = original, 0 = sin movimiento, 2 = el doble) */
-  const SET_T=new Set(['flicker','springx','diag','bob','rise','nr','nl','nu','nur','emit','eq','drop','screw','unroll','swipe','swing','swings','flag','door','bubble','ring','hop','pulse2','exu','exd','mxl','mxr','squash','smoke','bump','flow','jelly','bendw']);
+  const SET_T=new Set(['flicker','springx','diag','bob','rise','nr','nl','nu','nur','emit','eq','drop','screw','unroll','swipe','swing','swings','flag','door','bubble','ring','hop','pulse2','exu','exd','mxl','mxr','squash','smoke','bump','flow','jelly','bendw','pop']);
   const SET_O=new Set(['dim','blink','twinkle','shine']);
   const f3=v=>(+v).toFixed(3).replace(/\.?0+$/,'');
   function scaleBody(b,i,tr,op){
@@ -156,7 +156,7 @@ window.MA=(function(){
     };
     /* aparición: líneas se dibujan, rellenos aparecen con rebote */
     c.appear=(list,step,o)=>{
-      const N=list.length||1;step=step===undefined?Math.min(opts.bg?.06:.14,(opts.bg?1.6:1.3)/N):step;
+      const N=list.length||1;step=(step===undefined?Math.min(opts.bg?.06:.14,(opts.bg?1.6:1.3)/N):step)*Math.min(2,c.inten);
       list.forEach((el,k)=>{
         const s=prop(el,'stroke'),f=prop(el,'fill'),dash=prop(el,'stroke-dasharray');
         const hasStroke=!!s&&s!=='none',hasFill=f===null?true:f!=='none',dashed=!!dash&&dash!=='none',hasTr=el.hasAttribute('transform')||el.tagName==='text';
