@@ -40,3 +40,24 @@ def letters_draw(d, start, step, stroke, fill, dur=.7, sw=4):
             [(0, "stroke-dashoffset:1;fill-opacity:0"), (s, "stroke-dashoffset:1;fill-opacity:0"), (s + dur, "stroke-dashoffset:0;fill-opacity:0"), (s + dur + .45, "stroke-dashoffset:0;fill-opacity:1")])
     return out
 
+
+# ---- utilidades v2 (deformación + cierre exacto con el logo oficial) ----
+import base64, io
+from PIL import Image as _Im
+LB = P["letters"]
+def geo(i):
+    x0, y0, x1, y1 = LB[i]["bbox"]
+    return dict(d=LET[i], cx=(x0+x1)/2, cy=(y0+y1)/2, w=x1-x0, h=y1-y0, top=y0, bot=y1)
+_png = {}
+def logo_png_b64(kind="terracota"):
+    """PNG oficial cuantizado (pocos colores) en base64, para que el cuadro final sea idéntico al logo."""
+    if kind not in _png:
+        im = _Im.open(f"brand/logo/muralia-logo-{kind}-transparente.png").convert("RGBA")
+        q = im.quantize(colors=8, method=_Im.FASTOCTREE); b = io.BytesIO(); q.save(b, "PNG", optimize=True)
+        _png[kind] = base64.b64encode(b.getvalue()).decode()
+    return _png[kind]
+def exact(d, body, kind="terracota", t0=5.8, t1=6.3):
+    """Envuelve la animación vectorial y la cruza al final con el PNG oficial (sin contornos ni diferencias de trazado)."""
+    kv = d.kf([(0, "opacity:1"), (t0, "opacity:1"), (t1, "opacity:0")], "linear")
+    ki = d.kf([(0, "opacity:0"), (t0, "opacity:0"), (t1, "opacity:1")], "linear")
+    return f'<g class="{kv}">{body}</g><image class="{ki}" x="0" y="0" width="1092" height="1092" href="data:image/png;base64,{logo_png_b64(kind)}"/>'
