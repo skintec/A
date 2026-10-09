@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Muralia — Animaciones</title>
+<link rel="icon" href="brand/logo/favicon-512-terracota.png">
+<style>
+@font-face{font-family:Anton;src:url(stories/fonts/anton.ttf)}
+@font-face{font-family:Oswald;font-weight:400;src:url(stories/fonts/oswald-400.ttf)}
+@font-face{font-family:Oswald;font-weight:500;src:url(stories/fonts/oswald-500.ttf)}
+:root{--clay:#C2551F;--clay-dark:#9C4318;--moss:#3E4A3C;--graphite:#2B2A26;--plaster:#EFE7DA;--paper:#FFFDF9}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--graphite);font:400 18px/1.4 Oswald,system-ui,sans-serif}
+header,section{max-width:1160px;margin:0 auto;padding:32px 16px}
+header{display:flex;align-items:center;gap:20px;border-bottom:4px solid var(--clay)}
+header img{width:72px;height:72px}
+h1,h2{font:400 clamp(32px,6vw,56px)/1 Anton;text-transform:uppercase;margin:0}
+h2{font-size:34px;margin-bottom:20px}
+.grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.st video{aspect-ratio:9/16}
+.wide{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+figure{margin:0;background:var(--plaster);border-top:4px solid var(--clay)}
+video,figure>img{display:block;width:100%;background:var(--graphite)}
+figcaption{padding:12px 14px;display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:16px}
+figcaption a{color:var(--clay-dark);font-weight:500;margin-left:10px}
+.b{font-weight:500}
+footer{padding:24px 16px;text-align:center;font-size:14px;color:var(--moss)}
+</style></head><body>
+<header><img src="brand/logo/muralia-logo-terracota-transparente.png" alt="Muralia"><div><h1>Animaciones</h1><div>Previsualización de piezas de marca · muralia.cl</div></div></header>
+
+<section><h2>Stories de Instagram · 1080×1920</h2>
+<div class="grid st">
+<figure><video src="media/story-termica.mp4" autoplay muted loop playsinline controls></video><figcaption><span class="b">Aislación térmica y acústica</span><span><a href="media/story-termica.mp4" download>MP4</a><a href="media/story-termica.gif" download>GIF</a></span></figcaption></figure>
+<figure><video src="media/story-ppci.mp4" autoplay muted loop playsinline controls></video><figcaption><span class="b">Protección pasiva contra incendios</span><span><a href="media/story-ppci.mp4" download>MP4</a><a href="media/story-ppci.gif" download>GIF</a></span></figcaption></figure>
+<figure><video src="media/story-tabiques.mp4" autoplay muted loop playsinline controls></video><figcaption><span class="b">Tabiques y cielos</span><span><a href="media/story-tabiques.mp4" download>MP4</a><a href="media/story-tabiques.gif" download>GIF</a></span></figcaption></figure>
+</div></section>
+
+<section><h2>Piezas para web y redes</h2>
+<div class="grid wide">
+<figure><video src="media/logo-reveal.mp4" autoplay muted loop playsinline controls></video><figcaption><span class="b">Revelado del logo</span><span><a href="media/logo-reveal.mp4" download>MP4</a><a href="media/logo-reveal.gif" download>GIF</a></span></figcaption></figure>
+<figure><video src="media/grillado.mp4" autoplay muted loop playsinline controls></video><figcaption><span class="b">Grillado</span><span><a href="media/grillado.mp4" download>MP4</a><a href="media/grillado.gif" download>GIF</a></span></figcaption></figure>
+<figure><video src="media/capas.mp4" autoplay muted loop playsinline controls></video><figcaption><span class="b">Sistema en capas</span><span><a href="media/capas.mp4" download>MP4</a><a href="media/capas.gif" download>GIF</a></span></figcaption></figure>
+</div></section>
+
+<section><h2>SVG animados · para el sitio</h2>
+<div class="grid wide">
+<figure><img src="animations/loader.svg" alt="Cargador" style="height:240px;object-fit:contain;background:var(--paper)"><figcaption><span class="b">Cargador</span><a href="animations/loader.svg" download>SVG</a></figcaption></figure>
+<figure><img src="animations/hero-grid.svg" alt="Fondo técnico" style="height:240px;object-fit:cover;background:var(--paper)"><figcaption><span class="b">Fondo técnico</span><a href="animations/hero-grid.svg" download>SVG</a></figcaption></figure>
+<figure><img src="animations/grillado.svg" alt="Grillado" style="height:240px;object-fit:contain;background:var(--paper)"><figcaption><span class="b">Grillado (vectorial)</span><a href="animations/grillado.svg" download>SVG</a></figcaption></figure>
+</div></section>
+<footer>Pieza interna de revisión · ventas@muralia.cl</footer>
+</body></html>
