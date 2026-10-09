@@ -552,6 +552,7 @@ window.MA=(function(){
     let done=false;
     if(opts.slide){slide(c,opts.slide);done=true}
     else if(opts.deform){MA.deform(c);done=true}
+    else if(opts.deformWall){MA.deformWall(c);done=true}
     else if(opts.alive!==undefined&&MA.ICONS[opts.alive]){MA.ICONS[opts.alive](c);done=true}
     else if(opts.recipe&&MA.WALL[opts.recipe]){MA.WALL[opts.recipe](c);done=true}
     if(!done){
@@ -745,6 +746,18 @@ window.MA=(function(){
   W['mitad-lana']=c=>tag(c,'polyline').forEach(e=>c.shift(e,30,0,1,{}));
   W['flechas-termicas']=c=>tag(c,'path').forEach((e,i)=>{const dashed=MA.prop(e,'stroke-dasharray');if(dashed&&dashed!=='none')c.a(e,'ma-dim',2,{delay:i*.15});else c.a(e,'ma-flow',2,{delay:(i%17)*.18,ease:'ease-in-out'})});
   W['sello-circular']=c=>tag(c,'path').forEach(e=>c.a(e,'ma-spin',1,{p:[c.vb[2]/2,c.vb[3]/2],ease:'linear'}));
+  /* deformación: las piezas sueltas se estiran como gelatina y las tramas (patrones) se estiran y se inclinan en ondas */
+  MA.deformWall=c=>{
+    const I=c.inten,N=Math.max(1,c.L.length);
+    c.L.forEach((e,i)=>{const f=MA.prop(e,'fill');if(f&&/^url\(/.test(f))return;c.a(e,'ma-jelly',3,{o:'50% 50%',delay:i/N*1.6})});
+    const K=48,sx=[],sy=[],kx=[];
+    for(let k=0;k<=K;k++){const u=k/K*2*Math.PI*2;sx.push((1+.09*I*Math.sin(u)).toFixed(4));sy.push((1-.07*I*Math.sin(u+.9)).toFixed(4));kx.push((5*I*Math.sin(u*2+.4)).toFixed(3))}
+    c.patterns.forEach(p=>{
+      if(c.baked){const u=((c.t*c.sp)%c.P)/c.P,k=Math.min(K,Math.round(u*K));p.setAttribute('patternTransform',(p.getAttribute('patternTransform')||'')+' scale('+sx[k]+' '+sy[k]+') skewX('+kx[k]+')');return}
+      const mk=(type,vals)=>{const a=c.doc.createElementNS('http://www.w3.org/2000/svg','animateTransform');a.setAttribute('attributeName','patternTransform');a.setAttribute('type',type);a.setAttribute('values',vals);a.setAttribute('dur',(c.P/c.sp)+'s');a.setAttribute('repeatCount','indefinite');a.setAttribute('additive','sum');p.appendChild(a)};
+      mk('scale',sx.map((v,k)=>v+' '+sy[k]).join(';'));mk('skewX',kx.join(';'));
+    });
+  };
 })();
 
 /* Exportación: cuadros -> GIF (codificador propio) o video (MediaRecorder: MP4 si el navegador lo permite, si no WebM). */
@@ -1027,7 +1040,7 @@ window.MA=(function(){
     MA.open({title:w.name,sub:'Fondo '+num+' · '+(h?'horizontal 1920 × 1080':'vertical 1080 × 1920'),bg:true,
       pw:h?960:540,ph:h?540:960,gw:h?640:360,gh:h?360:640,vw:h?960:540,vh:h?540:960,
       file:'muralia-fondo-'+num+'-'+slug(w.name)+'-'+(h?'horizontal':'vertical'),
-      modes:[{id:'segun-diseno',label:'Según su diseño',hint:'se mueve como el dibujo sugiere',opts:{recipe:w.slug}},{id:'aparicion',label:'Aparición',hint:'se dibuja o aparece',opts:{}}],
+      modes:[{id:'segun-diseno',label:'Según su diseño',hint:'se mueve como el dibujo sugiere',opts:{recipe:w.slug}},{id:'aparicion',label:'Aparición',hint:'se dibuja o aparece',opts:{}},{id:'deformacion',label:'Deformación',hint:'las piezas y las tramas se estiran como un cuerpo blando',opts:{deformWall:true}}],
       current:()=>cur,original:()=>org,bgCur:'#FFFDF9',bgOrg:'#FFFDF9'});
   };
   const ea=document.getElementById('ed-anim');

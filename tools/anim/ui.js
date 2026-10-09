@@ -175,7 +175,7 @@
     MA.open({title:w.name,sub:'Fondo '+num+' · '+(h?'horizontal 1920 × 1080':'vertical 1080 × 1920'),bg:true,
       pw:h?960:540,ph:h?540:960,gw:h?640:360,gh:h?360:640,vw:h?960:540,vh:h?540:960,
       file:'muralia-fondo-'+num+'-'+slug(w.name)+'-'+(h?'horizontal':'vertical'),
-      modes:[{id:'segun-diseno',label:'Según su diseño',hint:'se mueve como el dibujo sugiere',opts:{recipe:w.slug}},{id:'aparicion',label:'Aparición',hint:'se dibuja o aparece',opts:{}}],
+      modes:[{id:'segun-diseno',label:'Según su diseño',hint:'se mueve como el dibujo sugiere',opts:{recipe:w.slug}},{id:'aparicion',label:'Aparición',hint:'se dibuja o aparece',opts:{}},{id:'deformacion',label:'Deformación',hint:'las piezas y las tramas se estiran como un cuerpo blando',opts:{deformWall:true}}],
       current:()=>cur,original:()=>org,bgCur:'#FFFDF9',bgOrg:'#FFFDF9'});
   };
   const ea=document.getElementById('ed-anim');

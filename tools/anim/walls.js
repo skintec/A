@@ -67,4 +67,16 @@
   W['mitad-lana']=c=>tag(c,'polyline').forEach(e=>c.shift(e,30,0,1,{}));
   W['flechas-termicas']=c=>tag(c,'path').forEach((e,i)=>{const dashed=MA.prop(e,'stroke-dasharray');if(dashed&&dashed!=='none')c.a(e,'ma-dim',2,{delay:i*.15});else c.a(e,'ma-flow',2,{delay:(i%17)*.18,ease:'ease-in-out'})});
   W['sello-circular']=c=>tag(c,'path').forEach(e=>c.a(e,'ma-spin',1,{p:[c.vb[2]/2,c.vb[3]/2],ease:'linear'}));
+  /* deformación: las piezas sueltas se estiran como gelatina y las tramas (patrones) se estiran y se inclinan en ondas */
+  MA.deformWall=c=>{
+    const I=c.inten,N=Math.max(1,c.L.length);
+    c.L.forEach((e,i)=>{const f=MA.prop(e,'fill');if(f&&/^url\(/.test(f))return;c.a(e,'ma-jelly',3,{o:'50% 50%',delay:i/N*1.6})});
+    const K=48,sx=[],sy=[],kx=[];
+    for(let k=0;k<=K;k++){const u=k/K*2*Math.PI*2;sx.push((1+.09*I*Math.sin(u)).toFixed(4));sy.push((1-.07*I*Math.sin(u+.9)).toFixed(4));kx.push((5*I*Math.sin(u*2+.4)).toFixed(3))}
+    c.patterns.forEach(p=>{
+      if(c.baked){const u=((c.t*c.sp)%c.P)/c.P,k=Math.min(K,Math.round(u*K));p.setAttribute('patternTransform',(p.getAttribute('patternTransform')||'')+' scale('+sx[k]+' '+sy[k]+') skewX('+kx[k]+')');return}
+      const mk=(type,vals)=>{const a=c.doc.createElementNS('http://www.w3.org/2000/svg','animateTransform');a.setAttribute('attributeName','patternTransform');a.setAttribute('type',type);a.setAttribute('values',vals);a.setAttribute('dur',(c.P/c.sp)+'s');a.setAttribute('repeatCount','indefinite');a.setAttribute('additive','sum');p.appendChild(a)};
+      mk('scale',sx.map((v,k)=>v+' '+sy[k]).join(';'));mk('skewX',kx.join(';'));
+    });
+  };
 })();
