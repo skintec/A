@@ -82,7 +82,22 @@
   #ed-png,#ed-svg{--i:${I.copy}} #ed-anim{--i:${I.down}} #ed-live{--i:${I.play}}
   #ed-png::before,#ed-svg::before,#ed-anim::before,#ed-live::before{content:"";width:13px;height:13px;background:currentColor;-webkit-mask:var(--i) center/contain no-repeat;mask:var(--i) center/contain no-repeat}
 
-  /* ---------- barra de búsqueda, color y categorías ---------- */
+
+  /* ---------- ritmo fijo al desplazarse ---------- */
+  #pane-el>.rit,#fondos>.rit{position:sticky;top:var(--barh,0px);z-index:4;box-shadow:0 6px 18px -12px rgba(43,42,38,.35);transition:box-shadow .2s,padding .2s}
+  #fondos>.rit{margin:16px 0 24px!important}
+  .rit.stuck{padding-block:6px!important}
+  .rit.stuck>span{display:none}
+  @media (max-width:860px){
+    .bar{position:static!important}
+    #pane-el>.rit,#fondos>.rit{top:0;flex-wrap:nowrap!important;gap:10px!important;padding:8px 10px!important;margin-inline:-16px;border-inline:0!important}
+    #pane-el>.rit>span,#fondos>.rit>span,#pane-el>.rit>b,#fondos>.rit>b{display:none}
+    #pane-el>.rit label,#fondos>.rit label{flex:1 1 0;min-width:0;gap:6px!important;font-size:11px}
+    #pane-el>.rit input[type=range],#fondos>.rit input[type=range]{width:auto!important;flex:1;min-width:30px}
+    #pane-el>.rit output,#fondos>.rit output{min-width:36px}
+    #pane-el>.rit button,#fondos>.rit button{font-size:0;width:30px;padding:0;justify-content:center;flex:none;gap:0}
+  }
+    /* ---------- barra de búsqueda, color y categorías ---------- */
   .bar>.wrap.mlbar{display:grid!important;grid-template-columns:minmax(220px,300px) 1fr;grid-template-areas:"q c" "n n";gap:0 24px!important;padding-block:0!important;align-items:stretch}
   .mlbar .qf{grid-area:q;display:flex;align-items:center;gap:0;height:40px;margin:12px 0;border:1px solid var(--line);background:#fff;border-radius:2px;transition:border-color .15s}
   .mlbar .qf:focus-within{border-color:var(--clay);box-shadow:0 0 0 3px rgba(194,85,31,.12)}
@@ -180,5 +195,12 @@
     if(acts[1]){const g=grp('Exportar','exp');acts[1].parentNode.insertBefore(g,acts[1]);g.appendChild(acts[1]);
       const note=side.querySelector('.ed-note');if(note)side.insertBefore(g,note)}
   }
+
+  /* el ritmo queda fijo bajo la barra superior */
+  const topbar=document.querySelector('.bar');
+  const setH=()=>{const fixed=topbar&&getComputedStyle(topbar).position==='sticky';document.documentElement.style.setProperty('--barh',(fixed?topbar.offsetHeight:0)+'px')};
+  if(topbar){setH();new ResizeObserver(setH).observe(topbar);addEventListener('resize',setH)}
+  const stuck=()=>document.querySelectorAll('#pane-el>.rit,#fondos>.rit').forEach(r=>{if(!r.offsetParent)return;const t=parseFloat(getComputedStyle(r).top)||0;r.classList.toggle('stuck',r.getBoundingClientRect().top<=t+1&&scrollY>0)});
+  addEventListener('scroll',stuck,{passive:true});
   MA.lookIcons=I;
 })();
