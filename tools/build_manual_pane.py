@@ -95,7 +95,7 @@ def build():
                  f'{dl(f"{M}/02_Logo/PNG/{p}-2000px.png", "PNG 2000")}</div></figcaption></figure>')
     h.append('</div><h3 class="mm-h3">Con fondo · avatares y perfiles</h3><div class="mm-grid">')
     for f, n, a in AVATARS:
-        h.append(f'<figure class="mm-card"><div class="mm-pv full"><img src="{M}/02_Logo/SVG/{f}.svg" alt="Logo Muralia {E(n)}" loading="lazy"></div>'
+        h.append(f'<figure class="mm-card"><div class="mm-pv full"><img width="128" height="128" src="{M}/02_Logo/SVG/{f}.svg" alt="Logo Muralia {E(n)}" loading="lazy"></div>'
                  f'<figcaption><b>{E(n)}</b><div class="mm-dl">{dl(f"{M}/02_Logo/SVG/{f}.svg", "SVG")}{dl(f"{M}/02_Logo/PNG/{a}-1080px.png", "PNG 1080")}</div></figcaption></figure>')
     fv = f"{M}/02_Logo/Favicon"
     h.append(f'<figure class="mm-card"><div class="mm-pv" style="background:#FFFDF9"><img src="{fv}/favicon.svg" alt="Favicon" style="width:64px;height:64px" loading="lazy"></div>'
@@ -197,9 +197,9 @@ CSS = r"""
 .mm-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line)}
 .mm-grid.pat{grid-template-columns:repeat(6,minmax(0,1fr))}
 .mm-card{margin:0;background:var(--paper);border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;min-width:0}
-.mm-pv{height:176px;display:grid;place-items:center;padding:28px;box-sizing:border-box;border-bottom:1px solid var(--line)}
-.mm-pv img{max-width:100%;max-height:100%;width:auto;height:112px}
-.mm-pv.full{padding:0}.mm-pv.full img{width:100%;height:100%;object-fit:cover;max-height:none}
+.mm-pv{height:176px;display:grid;place-items:center;padding:28px;box-sizing:border-box;border-bottom:1px solid var(--line);overflow:hidden;flex:none}
+.mm-pv img{display:block;max-width:100%;max-height:100%;width:auto;height:112px;object-fit:contain}
+.mm-pv.full{background:var(--plaster)}.mm-pv.full img{width:128px;height:128px;max-height:none;object-fit:contain;box-shadow:0 8px 20px -12px rgba(43,42,38,.5)}
 .mm-pv.tile{background-size:80px 80px;background-repeat:repeat;padding:0}
 .mm-card figcaption{padding:12px 12px 14px;display:grid;grid-template-columns:minmax(0,1fr)!important;gap:8px;align-content:start;flex:1;border-top:0;font-size:13px}
 .mm-card figcaption b{font:600 13px 'Archivo'}
@@ -229,7 +229,7 @@ CSS = r"""
   .mm-rules{grid-template-columns:repeat(2,minmax(0,1fr))}.mm-rules div:nth-child(odd){border-left:0}.mm-rules div:nth-child(n+3){border-top:1px solid var(--line)}.mm-rules .no{grid-column:1/-1}}
 @media (max-width:640px){.mm-fonts{grid-template-columns:1fr}.mm-pal{grid-template-columns:repeat(2,minmax(0,1fr))}.mm-sw:nth-child(odd){border-left:0}.mm-sw:nth-child(4){border-left:1px solid var(--line)}
   .mm-sw:nth-child(n+3){border-top:1px solid var(--line)}.mm-thumbs{grid-template-columns:repeat(3,minmax(0,1fr))}.mm-stage{padding:10px}.mm-arr{width:32px;height:44px;font-size:24px}
-  .mm-arr.prev{left:4px}.mm-arr.next{right:4px}.mm-pv{height:140px;padding:20px}.mm-font .spec{font-size:26px}.mm-sh h2{font-size:34px}}
+  .mm-arr.prev{left:4px}.mm-arr.next{right:4px}.mm-pv{height:140px;padding:20px}.mm-pv img{height:88px}.mm-pv.full img{width:96px;height:96px}.mm-font .spec{font-size:26px}.mm-sh h2{font-size:34px}}
 """
 
 JS = r"""
