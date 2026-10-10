@@ -1,0 +1,103 @@
+{
+  "clay": {
+    "nombre": "Arcilla",
+    "hex": "#C2551F",
+    "rgb": [
+      194,
+      85,
+      31
+    ],
+    "cmyk_aprox": [
+      0,
+      56,
+      84,
+      24
+    ],
+    "uso": "Acento primario: botones, CTA, logo en color, énfasis"
+  },
+  "clay-dark": {
+    "nombre": "Arcilla oscura",
+    "hex": "#9C4318",
+    "rgb": [
+      156,
+      67,
+      24
+    ],
+    "cmyk_aprox": [
+      0,
+      57,
+      85,
+      39
+    ],
+    "uso": "Hover / estado activo del acento"
+  },
+  "moss": {
+    "nombre": "Musgo",
+    "hex": "#3E4A3C",
+    "rgb": [
+      62,
+      74,
+      60
+    ],
+    "cmyk_aprox": [
+      16,
+      0,
+      19,
+      71
+    ],
+    "uso": "Secundario: bloques de contraste, fondos oscuros"
+  },
+  "graphite": {
+    "nombre": "Grafito",
+    "hex": "#2B2A26",
+    "rgb": [
+      43,
+      42,
+      38
+    ],
+    "cmyk_aprox": [
+      0,
+      2,
+      12,
+      83
+    ],
+    "uso": "Texto principal y fondos oscuros"
+  },
+  "plaster": {
+    "nombre": "Yeso",
+    "hex": "#EFE7DA",
+    "rgb": [
+      239,
+      231,
+      218
+    ],
+    "cmyk_aprox": [
+      0,
+      3,
+      9,
+      6
+    ],
+    "uso": "Fondo cálido de secciones alternas"
+  },
+  "paper": {
+    "nombre": "Papel",
+    "hex": "#FFFDF9",
+    "rgb": [
+      255,
+      253,
+      249
+    ],
+    "cmyk_aprox": [
+      0,
+      1,
+      2,
+      0
+    ],
+    "uso": "Fondo base"
+  },
+  "_prohibidos": [
+    "azul",
+    "celeste",
+    "rojo"
+  ]
+}
