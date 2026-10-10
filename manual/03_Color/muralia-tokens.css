@@ -1,0 +1,15 @@
+/* Muralia — design tokens */
+:root{
+  --clay:#C2551F;      /* Arcilla — acento primario */
+  --clay-dark:#9C4318; /* Arcilla oscura — hover/activo */
+  --moss:#3E4A3C;      /* Musgo — secundario */
+  --graphite:#2B2A26;  /* Grafito — texto y fondos oscuros */
+  --plaster:#EFE7DA;   /* Yeso — fondo cálido alterno */
+  --paper:#FFFDF9;     /* Papel — fondo base */
+
+  --font-display:'Anton','Oswald',sans-serif;               /* titulares */
+  --font-numeric:'Big Shoulders Display','Anton',sans-serif;/* cifras, etiquetas técnicas */
+  --font-accent:'Alfa Slab One',serif;                      /* acento puntual */
+  --font-body:'Oswald',system-ui,sans-serif;                /* texto y subtítulos */
+}
+/* Escala tipográfica de 4 pasos del sitio: --fs-lead, --fs-body-sm, --fs-meta, --fs-label (valores en styles.css de muralia.cl) */

@@ -84,7 +84,7 @@
 
 
   /* ---------- ritmo fijo al desplazarse ---------- */
-  #pane-el>.rit,#fondos>.rit{position:sticky;top:var(--barh,0px);z-index:4;box-shadow:0 6px 18px -12px rgba(43,42,38,.35);transition:box-shadow .2s,padding .2s}
+  #pane-el>.rit,#fondos>.rit{position:sticky;top:calc(var(--barh,0px) + var(--tabh,0px));z-index:4;box-shadow:0 6px 18px -12px rgba(43,42,38,.35);transition:box-shadow .2s,padding .2s}
   #fondos>.rit{margin:16px 0 24px!important}
   .rit.stuck{padding-block:6px!important}
   .rit.stuck>span{display:none}
@@ -97,7 +97,19 @@
     #pane-el>.rit output,#fondos>.rit output{min-width:36px}
     #pane-el>.rit button,#fondos>.rit button{font-size:0;width:30px;padding:0;justify-content:center;flex:none;gap:0}
   }
-    /* ---------- barra de búsqueda, color y categorías ---------- */
+  
+  /* ---------- pestañas fijas ---------- */
+  .bar[hidden]{display:none!important}
+  main>.tabs{position:sticky;top:var(--barh,0px);z-index:5;background:var(--plaster);margin-top:12px!important;padding-top:8px}
+  main>.tabs.stuck{box-shadow:0 8px 16px -14px rgba(43,42,38,.45)}
+  main>.tabs.stuck button{padding-block:8px 6px;font-size:22px}
+  @media (max-width:860px){
+    main>.tabs{top:0;overflow-x:auto;scrollbar-width:none;flex-wrap:nowrap;margin-inline:-16px;padding-inline:8px}
+    main>.tabs button{flex:none;white-space:nowrap;font-size:20px!important;padding:10px 10px 8px!important}
+    main>.tabs button span{font-size:10.5px}
+    #pane-el>.rit,#fondos>.rit{top:var(--tabh,0px)}
+  }
+  /* ---------- barra de búsqueda, color y categorías ---------- */
   .bar>.wrap.mlbar{display:grid!important;grid-template-columns:minmax(220px,300px) 1fr;grid-template-areas:"q c" "n n";gap:0 24px!important;padding-block:0!important;align-items:stretch}
   .mlbar .qf{grid-area:q;display:flex;align-items:center;gap:0;height:40px;margin:12px 0;border:1px solid var(--line);background:#fff;border-radius:2px;transition:border-color .15s}
   .mlbar .qf:focus-within{border-color:var(--clay);box-shadow:0 0 0 3px rgba(194,85,31,.12)}
@@ -202,5 +214,10 @@
   if(topbar){setH();new ResizeObserver(setH).observe(topbar);addEventListener('resize',setH)}
   const stuck=()=>document.querySelectorAll('#pane-el>.rit,#fondos>.rit').forEach(r=>{if(!r.offsetParent)return;const t=parseFloat(getComputedStyle(r).top)||0;r.classList.toggle('stuck',r.getBoundingClientRect().top<=t+1&&scrollY>0)});
   addEventListener('scroll',stuck,{passive:true});
+
+  /* pestañas fijas: su alto alimenta la posición del ritmo y del índice del manual */
+  const tabsEl=document.querySelector('main>.tabs');
+  if(tabsEl){const setT=()=>document.documentElement.style.setProperty('--tabh',tabsEl.offsetHeight+'px');setT();new ResizeObserver(setT).observe(tabsEl);
+    const stT=()=>{const t=parseFloat(getComputedStyle(tabsEl).top)||0;tabsEl.classList.toggle('stuck',tabsEl.getBoundingClientRect().top<=t+.5&&scrollY>200)};addEventListener('scroll',stT,{passive:true});stT()}
   MA.lookIcons=I;
 })();
