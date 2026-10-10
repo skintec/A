@@ -283,7 +283,7 @@
   const pe=document.getElementById('pane-el');
   if(pe){const r=rhythmBox('el');r.style.cssText='padding:14px 0 4px';const hint=document.createElement('span');hint.textContent='Se aplica a las vistas animadas y al diálogo «Descargar animado».';r.appendChild(hint);pe.insertBefore(r,pe.firstChild)}
   const wt=document.querySelector('#fondos .wp-head');
-  if(wt){const r=rhythmBox('wp');r.style.marginTop='8px';wt.appendChild(r)}
+  if(wt){const r=rhythmBox('wp');r.style.marginTop='8px';wt.after(r)}
   RH.subs.push(src=>{
     if(src==='dlg')return;
     [...live.active].forEach(th=>{const f=th.closest('.w');if(!f)return;const pin=th._pin,sl=WP[+f.dataset.i].slug;live.stop(th);live.start(th,sl,pin)});
