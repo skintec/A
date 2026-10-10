@@ -15,32 +15,68 @@
   function ensure(){
     if(dlg)return dlg;
     const st=document.createElement('style');
-    st.textContent='#ma{position:fixed;inset:0;background:rgba(43,42,38,.75);z-index:70;display:grid;place-items:center;padding:16px}#ma[hidden]{display:none}'
-     +'#ma .box{background:#FFFDF9;width:min(820px,100%);max-height:100%;overflow:auto;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}@media(max-width:680px){#ma .box{grid-template-columns:1fr}}'
-     +'#ma .pv{background:#EFE7DA;display:grid;place-items:center;padding:16px;min-height:260px;position:relative}#ma .pv img{max-width:100%;max-height:60vh;display:block;box-shadow:0 0 0 1px #DDD5C4}'
-     +'#ma .rs{position:absolute;left:12px;bottom:12px}#ma .sd{padding:20px 20px 0;display:flex;flex-direction:column;gap:14px;overflow:auto;max-height:calc(100vh - 32px)}#ma .row{position:sticky;bottom:0;background:#FFFDF9;padding:10px 0 16px;margin-top:auto;border-top:1px solid #DDD5C4}#ma h3{font:400 30px/1 "Bebas Neue",sans-serif;margin:0}#ma .sub{font-size:12.5px;color:#5a594f;margin-top:4px}'
-     +'#ma fieldset{border:0;padding:0;margin:0;display:grid;gap:6px}#ma legend{font:700 12px Archivo,sans-serif;letter-spacing:1.2px;text-transform:uppercase;color:#9C4318;margin-bottom:4px;padding:0}'
-     +'#ma label{display:flex;gap:8px;align-items:center;font-size:14px;cursor:pointer}#ma label small{color:#5a594f}'
-     +'#ma .row{display:flex;gap:8px;flex-wrap:wrap}#ma button{appearance:none;border:1px solid #DDD5C4;background:#FFFDF9;font:600 13px Archivo,sans-serif;padding:9px 14px;cursor:pointer;color:#2B2A26}'
-     +'#ma button.dark{background:#2B2A26;color:#FFFDF9;border-color:#2B2A26}#ma button:disabled{opacity:.5;cursor:wait}#ma .bar{height:6px;background:#DDD5C4}#ma .bar i{display:block;height:100%;width:0;background:#C2551F}#ma .msg{font-size:12.5px;color:#5a594f;min-height:1.2em}'
-     +'.mkn{display:flex;gap:6px;align-items:center;grid-column:1/-1;font:600 12px Archivo,sans-serif;color:#5a594f}.mkn input[type=text]{width:46px;font:700 13px Archivo;padding:3px 5px;border:1px solid #DDD5C4;background:#FFFDF9;text-align:center}.mkn label{display:flex;gap:4px;align-items:center;font-weight:500}'
-     +'.pv .hv{display:block}#ma .sl{display:grid;grid-template-columns:84px 1fr 48px;gap:8px;align-items:center}#ma .sl input{width:100%;accent-color:#C2551F}#ma .sl b{font-size:13px;text-align:right}#ma .sl.off{opacity:.45}';
+    st.textContent=`
+    #ma{position:fixed;inset:0;background:rgba(43,42,38,.62);backdrop-filter:blur(2px);z-index:70;display:grid;place-items:center;padding:16px}
+    #ma[hidden]{display:none}
+    #ma .box{background:#FFFDF9;width:min(880px,100%);max-height:calc(100vh - 32px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,380px);box-shadow:0 18px 50px rgba(0,0,0,.28);overflow:hidden}
+    @media(max-width:720px){#ma .box{grid-template-columns:1fr;overflow:auto}#ma .pv{min-height:220px}}
+    #ma .pv{background:#EFE7DA;display:grid;place-items:center;padding:28px;position:relative;min-height:300px;height:auto}
+    #ma .pv img{max-width:100%;max-height:calc(100vh - 120px);display:block;background:#FFFDF9;box-shadow:0 0 0 1px #DDD5C4}
+    #ma .rs{position:absolute;left:12px;top:12px;height:28px;padding:0 10px;border:1px solid #DDD5C4;background:#FFFDF9;font:600 11px Archivo,sans-serif;color:#5a594f;cursor:pointer;display:inline-flex;align-items:center;gap:6px;border-radius:2px}
+    #ma .rs:hover{border-color:#C2551F;color:#9C4318}
+    #ma .sd{display:flex;flex-direction:column;min-height:0;max-height:calc(100vh - 32px)}
+    #ma .hd{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:18px 20px 12px;border-bottom:1px solid #EFE7DA}
+    #ma h3{font:400 28px/1 "Bebas Neue",sans-serif;margin:0;color:#2B2A26}
+    #ma .sub{font-size:12px;color:#5a594f;margin-top:4px}
+    #ma .x{appearance:none;width:30px;height:30px;flex:none;border:1px solid #DDD5C4;background:#FFFDF9;cursor:pointer;font:400 18px/1 Archivo,sans-serif;color:#5a594f;border-radius:2px}
+    #ma .x:hover{border-color:#C2551F;color:#9C4318}
+    #ma .bd{padding:14px 20px;display:flex;flex-direction:column;gap:16px;overflow:auto;flex:1}
+    #ma fieldset{border:0;padding:0;margin:0;display:grid;gap:7px;min-width:0}
+    #ma legend{font:700 11px Archivo,sans-serif;letter-spacing:1.4px;text-transform:uppercase;color:#9C4318;margin-bottom:7px;padding:0}
+    #ma .seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;border:1px solid #DDD5C4;border-radius:2px;overflow:hidden}
+    #ma .seg label{position:relative;display:flex;align-items:center;justify-content:center;text-align:center;height:34px;padding:0 6px;font:600 12px/1.1 Archivo,sans-serif;color:#5a594f;cursor:pointer;border-left:1px solid #DDD5C4;background:#FFFDF9;transition:background .15s,color .15s}
+    #ma .seg label:first-child{border-left:0}
+    #ma .seg label:hover{background:#f6f1e8;color:#2B2A26}
+    #ma .seg input{position:absolute;opacity:0;pointer-events:none}
+    #ma .seg label:has(input:checked){background:#2B2A26;color:#FFFDF9}
+    #ma .seg label:has(input:disabled){opacity:.4;cursor:not-allowed}
+    #ma .seg label:has(input:focus-visible){outline:2px solid #C2551F;outline-offset:-2px}
+    #ma .hint{font-size:11.5px;color:#5a594f;min-height:1.2em}
+    #ma .sl{display:grid;grid-template-columns:76px 1fr 46px;gap:10px;align-items:center;font:500 12px Archivo,sans-serif;color:#2B2A26}
+    #ma .sl input{width:100%;accent-color:#C2551F}
+    #ma .sl b{height:22px;display:inline-flex;align-items:center;justify-content:center;background:#EFE7DA;font:700 11.5px Archivo,sans-serif;border-radius:2px}
+    #ma .sl.off{opacity:.45}
+    #ma .rrow{display:flex;justify-content:space-between;align-items:center;gap:10px}
+    #ma .lnk{appearance:none;border:0;background:none;padding:0;font:600 11.5px Archivo,sans-serif;color:#5a594f;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+    #ma .lnk:hover{color:#9C4318}
+    #ma .ft{padding:12px 20px 16px;border-top:1px solid #EFE7DA;display:grid;gap:8px;background:#FFFDF9}
+    #ma .go{appearance:none;height:40px;border:0;background:#2B2A26;color:#FFFDF9;font:700 13px Archivo,sans-serif;letter-spacing:.3px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:2px}
+    #ma .go:hover{background:#9C4318}
+    #ma .go:disabled{opacity:.6;cursor:wait}
+    #ma .go::before{content:"";width:14px;height:14px;background:currentColor;-webkit-mask:var(--dl) center/contain no-repeat;mask:var(--dl) center/contain no-repeat}
+    #ma .bar{height:4px;background:#EFE7DA;border-radius:2px;overflow:hidden}#ma .bar i{display:block;height:100%;width:0;background:#C2551F;transition:width .1s}
+    #ma .msg{font-size:11.5px;color:#5a594f;min-height:1.1em}
+    `;
     document.head.appendChild(st);
     dlg=document.createElement('div');dlg.id='ma';dlg.hidden=true;
-    dlg.innerHTML='<div class="box" role="dialog" aria-modal="true" aria-labelledby="ma-t"><div class="pv"><img alt="Vista previa animada"><button type="button" class="rs" id="ma-rs">Reiniciar</button></div><div class="sd">'
-     +'<div><h3 id="ma-t"></h3><div class="sub" id="ma-s"></div></div>'
+    dlg.innerHTML='<div class="box" role="dialog" aria-modal="true" aria-labelledby="ma-t"><div class="pv"><img alt="Vista previa animada"><button type="button" class="rs" id="ma-rs">↻ Reiniciar</button></div><div class="sd">'
+     +'<div class="hd"><div><h3 id="ma-t"></h3><div class="sub" id="ma-s"></div></div><button type="button" class="x" id="ma-x" aria-label="Cerrar">×</button></div>'
+     +'<div class="bd">'
      +'<fieldset id="ma-modes"><legend>Animación</legend></fieldset>'
      +'<fieldset id="ma-rhythm"><legend>Ritmo</legend>'
      +'<label class="sl"><span>Velocidad</span><input type="range" id="ma-sp" min="0.5" max="3" step="0.25" value="1"><b id="ma-spv">1×</b></label>'
      +'<label class="sl"><span>Intensidad</span><input type="range" id="ma-in" min="0" max="2" step="0.25" value="1"><b id="ma-inv">100%</b></label>'
-     +'<div class="sub" id="ma-rn"></div><button type="button" id="ma-rr" style="justify-self:start">Restablecer ritmo</button></fieldset>'
-     +'<fieldset><legend>Formato</legend><label><input type="radio" name="ma-f" value="svg" checked> SVG animado <small>vectorial, para web</small></label>'
-     +'<label><input type="radio" name="ma-f" value="gif"> GIF <small>funciona en cualquier lugar</small></label>'
-     +'<label><input type="radio" name="ma-f" value="vid"> Video <small>MP4 o WebM, según tu navegador</small></label></fieldset>'
-     +'<fieldset><legend>Colores</legend><label><input type="radio" name="ma-c" value="cur" checked> <span>Los que elegí</span></label><label><input type="radio" name="ma-c" value="org"> <span>Originales de Muralia</span></label></fieldset>'
-     +'<div class="bar" hidden><i></i></div><div class="msg" role="status"></div>'
-     +'<div class="row"><button type="button" class="dark" id="ma-go">Descargar</button><button type="button" id="ma-x">Cerrar</button></div></div></div>';
+     +'<div class="rrow"><span class="hint" id="ma-rn"></span><button type="button" class="lnk" id="ma-rr">Restablecer</button></div></fieldset>'
+     +'<fieldset><legend>Formato</legend><div class="seg"><label><input type="radio" name="ma-f" value="svg" checked>SVG</label><label><input type="radio" name="ma-f" value="gif">GIF</label><label><input type="radio" name="ma-f" value="vid">Video</label></div><div class="hint" id="ma-fh"></div></fieldset>'
+     +'<fieldset><legend>Colores</legend><div class="seg"><label><input type="radio" name="ma-c" value="cur" checked>Los que elegí</label><label><input type="radio" name="ma-c" value="org">Originales</label></div></fieldset>'
+     +'</div>'
+     +'<div class="ft"><div class="bar" hidden><i></i></div><div class="msg" role="status"></div><button type="button" class="go" id="ma-go">Descargar</button></div>'
+     +'</div></div>';
+    dlg.style.setProperty('--dl',MA.lookIcons?MA.lookIcons.down:'none');
     document.body.appendChild(dlg);
+    const FH={svg:'Vectorial y liviano, para la web.',gif:'Funciona en cualquier lugar (presentaciones, correo, redes).',vid:'MP4 o WebM según tu navegador, para redes sociales.'};
+    const fh=()=>{dlg.querySelector('#ma-fh').textContent=FH[dlg.querySelector('input[name="ma-f"]:checked').value]};
+    dlg.querySelectorAll('input[name="ma-f"]').forEach(r=>r.addEventListener('change',fh));fh();
     dlg.addEventListener('click',e=>{if(e.target===dlg||e.target.id==='ma-x')close()});
     dlg.querySelector('#ma-rs').addEventListener('click',()=>preview());
     document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!dlg.hidden)close()});
@@ -86,19 +122,21 @@
   let tmr=null;
   function rhythmUI(){
     const sp=spd(),inn=inten(),m=modeNow();
+    const mh=dlg.querySelector('#ma-mh');if(mh)mh.textContent=m.label+': '+m.hint+'.';
     dlg.querySelector('#ma-spv').textContent=sp+'×';dlg.querySelector('#ma-inv').textContent=Math.round(inn*100)+'%';
     const off=m.intensity===false;dlg.querySelector('#ma-in').disabled=off;dlg.querySelector('#ma-in').closest('label').classList.toggle('off',off);
-    dlg.querySelector('#ma-rn').textContent='Cada vuelta dura '+(MA.P/sp).toFixed(1).replace('.0','')+' s'+(off?' · en el deslizamiento solo cambia la velocidad':'')+'.';
+    dlg.querySelector('#ma-rn').textContent='Vuelta de '+(MA.P/sp).toFixed(1).replace('.0','')+' s'+(off?' · aquí solo cambia la velocidad':'');
   }
   function rhythmChange(){rhythmUI();setRhythm(spd(),inten(),'dlg');clearTimeout(tmr);tmr=setTimeout(preview,140)}
   function open(sp){
     spec=sp;ensure();
     dlg.querySelector('#ma-t').textContent=sp.title;dlg.querySelector('#ma-s').textContent=sp.sub;
-    const fs=dlg.querySelector('#ma-modes');fs.hidden=sp.modes.length<2;
-    fs.innerHTML='<legend>Animación</legend>'+sp.modes.map((m,i)=>'<label><input type="radio" name="ma-m" value="'+m.id+'"'+((sp.defaultMode&&sp.modes.some(x=>x.id===sp.defaultMode)?m.id===sp.defaultMode:i===0)?' checked':'')+'> '+m.label+' <small>'+m.hint+'</small></label>').join('');
+    const fs=dlg.querySelector('#ma-modes');fs.hidden=sp.modes.length<2;dlg.querySelector('.bd').scrollTop=0;
+    const SH={aparicion:'Aparece',movimiento:'Movimiento','desliza-derecha':'Desliza →','desliza-izquierda':'Desliza ←',deformacion:'Deformación','segun-diseno':'Su diseño'};
+    fs.innerHTML='<legend>Animación</legend><div class="seg">'+sp.modes.map((m,i)=>'<label title="'+m.hint+'"><input type="radio" name="ma-m" value="'+m.id+'"'+((sp.defaultMode&&sp.modes.some(x=>x.id===sp.defaultMode)?m.id===sp.defaultMode:i===0)?' checked':'')+'>'+(SH[m.id]||m.label)+'</label>').join('')+'</div><div class="hint" id="ma-mh"></div>';
     dlg.querySelector('input[name="ma-f"][value="svg"]').checked=true;
     const same=sp.current()===sp.original();const org=dlg.querySelector('input[name="ma-c"][value="org"]'),cu=dlg.querySelector('input[name="ma-c"][value="cur"]');
-    cu.checked=true;org.disabled=same;org.closest('label').style.opacity=same?.5:1;
+    cu.checked=true;org.disabled=same;
     dlg.querySelector('.msg').textContent=same?'Estás usando los colores originales.':'';dlg.querySelector('.bar').hidden=true;
     dlg.querySelectorAll('input[name="ma-c"]').forEach(r=>r.onchange=preview);
     dlg.querySelectorAll('input[name="ma-m"]').forEach(r=>r.onchange=()=>{rhythmUI();preview()});
@@ -107,7 +145,7 @@
     dlg.querySelector('#ma-rr').onclick=()=>{dlg.querySelector('#ma-sp').value=1;dlg.querySelector('#ma-in').value=1;rhythmChange()};
     rhythmUI();
     dlg.querySelector('#ma-go').onclick=run;
-    dlg.hidden=false;dlg.querySelector('#ma-go').focus({preventScroll:true});dlg.querySelector('.sd').scrollTop=0;preview();
+    dlg.hidden=false;dlg.querySelector('#ma-go').focus({preventScroll:true});preview();
   }
   MA.open=open;MA.slug=slug;
 
@@ -222,8 +260,8 @@
       if(th._url){URL.revokeObjectURL(th._url);th._url=null}
     },
     toggle(th,slug,btn){
-      if(th._saved!==undefined&&th._pin){live.stop(th);btn.textContent='Vista animada'}
-      else{live.stop(th);live.start(th,slug,true);btn.textContent='Detener vista'}
+      if(th._saved!==undefined&&th._pin){live.stop(th);btn.textContent='Ver animado';btn.setAttribute('aria-pressed','false')}
+      else{live.stop(th);live.start(th,slug,true);btn.textContent='Detener vista';btn.setAttribute('aria-pressed','true')}
     }
   };
 
