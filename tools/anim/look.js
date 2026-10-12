@@ -193,6 +193,7 @@
 
   /* ---------- estructura común (patrón del manual) ---------- */
   .bar.gone{display:none!important}
+  #pane-videos video{cursor:default}
   main>.tabrow{top:0!important}
   .phd{display:flex;flex-wrap:wrap;gap:14px 32px;align-items:flex-end;justify-content:space-between;margin:28px 0 18px!important;padding:0!important}
   .phd p{max-width:680px;margin:0;color:var(--muted)}
@@ -331,5 +332,14 @@
       ls.forEach(a=>{const s2=document.getElementById(a.getAttribute('href').slice(1));if(s2&&!s2.hidden&&s2.getBoundingClientRect().top-y<=0)cur=a});ls.forEach(a=>a.classList.toggle('on',a===cur))});
     if(tabsEl)tabsEl.classList.toggle('stuck',scrollY>200)};
   addEventListener('scroll',markAll,{passive:true});markAll();
+
+  /* videos: sin controles mientras se reproducen; aparecen solo al pasar el cursor (o al tocar en celular) */
+  const pvv=document.getElementById('pane-videos');
+  if(pvv){const on=v=>{v.controls=true},off=v=>{v.controls=false};
+    pvv.querySelectorAll('video').forEach(off);
+    pvv.addEventListener('mouseover',e=>{const v=e.target.closest&&e.target.closest('video');if(v)on(v)});
+    pvv.addEventListener('mouseout',e=>{const v=e.target.closest&&e.target.closest('video');if(v&&!v.contains(e.relatedTarget))off(v)});
+    pvv.addEventListener('touchstart',e=>{const v=e.target.closest&&e.target.closest('video');if(!v||v.controls)return;on(v);clearTimeout(v._ht);v._ht=setTimeout(()=>off(v),3000)},{passive:true});
+    new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.tagName==='VIDEO')off(n);else if(n.querySelectorAll)n.querySelectorAll('video').forEach(off)}))).observe(pvv,{childList:true,subtree:true})}
   MA.lookIcons=I;
 })();
