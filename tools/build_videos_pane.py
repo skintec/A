@@ -93,7 +93,7 @@ for title, intro, items, cls in SECTIONS:
     cards = ""
     for it in items:
         n += 1; vs = [ver(it, v) for v in it["versions"]]; last = vs[-1]
-        media = (f'<video class="md" src="{last["src"]}" autoplay muted loop playsinline controls preload="metadata"></video>' if it["kind"] == "video"
+        media = (f'<video class="md" src="{last["src"]}" autoplay muted loop playsinline preload="metadata"></video>' if it["kind"] == "video"
                  else f'<img class="md{" cover" if it["slug"]=="hero-grid" else ""}" src="{last["src"]}" alt="{html.escape(last["title"])}" loading="lazy">')
         vbtn = ""
         if len(vs) > 1:
@@ -138,7 +138,7 @@ JS = """
 p = "index.html"; s = open(p, encoding="utf8").read()
 # pane
 a = s.index('<div class="pane" id="pane-videos"'); a_end = s.index('>', a) + 1
-z = s.index('</div></main>')
+z = s.index('</div><!--MANUAL-->') if '</div><!--MANUAL-->' in s else s.index('</div></main>')
 s = s[:a_end] + out + s[z:]
 # css
 s = re.sub(r'\n/\*VIDEOS-CSS\*/.*?/\*/VIDEOS-CSS\*/\n', '\n', s, flags=re.S)
